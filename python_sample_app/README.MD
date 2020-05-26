@@ -41,30 +41,3 @@ ia_python_publisher container.
 
 As mentioned in **NOTE**, the subscriber and client are running inside
 ia_python_publisher container.
-
-## `Configuration`
-1. Please replace the
-
-   [docker-compose.yml](../../build/docker-compose.yml) with
-   [docker-compose.yml](./docker-compose.yml)
-
-   And
-
-   [eis_config.json](../../build/provision/config/eis_config.json) with
-   [eis_config.json](./config/eis_config.json)
-
-2. Do provisioning and start containers.
-
-   ```sh
-   $ cd build/provision
-   $ sudo ./provision_eis.sh ../docker-compose.yml
-   $ cd ..
-   ```
-
-   ```sh
-   $ docker-compose build
-   $ docker-compose up -d
-   $ docker logs -f ia_python_publisher
-   $ docker logs -f ia_python_subscriber
-   ```
-

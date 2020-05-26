@@ -26,13 +26,14 @@ import (
 	eismsgbus "EISMessageBus/eismsgbus"
 	util "IEdgeInsights/common/util"
 	envconfig "EnvConfig"
+	"github.com/golang/glog"
 	"flag"
 	"fmt"
 	"os"
 	"strconv"
 	"time"
-        "encoding/json"
-        configmgr "ConfigManager"
+	"encoding/json"
+	configmgr "ConfigManager"
 )
 
 func start_publisher(topic string) {

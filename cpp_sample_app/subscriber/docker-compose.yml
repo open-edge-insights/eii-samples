@@ -1,0 +1,55 @@
+version: '3.6'
+
+services:
+
+  ia_cpp_subscriber:
+    depends_on:
+      - ia_eisbase
+    build:
+      context: $PWD/../CppSubscriber
+      dockerfile: $PWD/../CppSubscriber/Dockerfile
+      args:
+        EIS_VERSION: ${EIS_VERSION}
+        EIS_UID: ${EIS_UID}
+        EIS_USER_NAME: ${EIS_USER_NAME}
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        # set CMAKE_BUILD_TYPE value to "Debug" to generate debug symbols
+        CMAKE_BUILD_TYPE: "Release"
+    image: ${DOCKER_REGISTRY}ia_cpp_subscriber:${EIS_VERSION}
+    container_name: ia_cpp_subscriber 
+    hostname: ia_cpp_subscriber
+    network_mode: host
+    restart: unless-stopped
+    user: ${EIS_UID}
+    environment:
+      AppName: "CppSubscriber"
+      DEV_MODE: ${DEV_MODE}
+      no_proxy: ${eis_no_proxy},${ETCD_HOST}
+      ETCD_HOST: ${ETCD_HOST}
+      ETCD_PREFIX: ${ETCD_PREFIX}
+      # MessageBus Endpoint Configuration
+      CertType: "zmq"
+
+      # Use IPC mode (zmq_ipc) when VideoIngestion and VideoAnalytics based
+      # containers are running on the same host. If they are running on diff
+      # host, please use TCP mode for communication.
+      # Eg: Stream cfg for
+      # IPC: zmq_ipc, <absolute_socket_directory_path>
+      # TPC: zmq_tcp, <publisher_host>:<publisher_port>
+      SubTopics: "CppPublisher/publish_test"
+      publish_test_cfg: "zmq_tcp,127.0.0.1:60015"
+      RequestEP: "CppPublisher"
+      CppPublisher_cfg: "zmq_tcp,127.0.0.1:60016"
+      #publish_test_cfg: "zmq_ipc,${SOCKET_DIR}/"
+    volumes:
+      - "vol_eis_socket:${SOCKET_DIR}"
+    secrets:
+      - ca_etcd
+      - etcd_CppSubscriber_cert
+      - etcd_CppSubscriber_key
+
+secrets:
+  etcd_CppSubscriber_cert:
+    file: provision/Certificates/CppSubscriber/CppSubscriber_client_certificate.pem
+  etcd_CppSubscriber_key:
+    file: provision/Certificates/CppSubscriber/CppSubscriber_client_key.pem

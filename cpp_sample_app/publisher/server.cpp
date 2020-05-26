@@ -27,91 +27,91 @@
 #include <string.h>
 #include <unistd.h>
 #include <server.h>
+#include <get_config_mgr.h>
+#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "eis/utils/logger.h"
 #include "eis/utils/json_config.h"
-#include <eis/config_manager/env_config.h>
-#include <get_config_mgr.h>
 
-Server::Server(std::atomic<bool> *loop)
-{this->loop = loop;}
+Server::Server(std::atomic<bool> *loop) {
+    this->loop = loop;}
 
-Server::~Server()
-{
-    if(msg != NULL)
+Server::~Server() {
+    if (msg != NULL)
         msgbus_msg_envelope_destroy(msg);
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
-    if(g_service_ctx != NULL)
+    if (g_service_ctx != NULL)
         msgbus_recv_ctx_destroy(g_msgbus_ctx_server, g_service_ctx);
-    if(g_msgbus_ctx_server != NULL)
+    if (g_msgbus_ctx_server != NULL)
         msgbus_destroy(g_msgbus_ctx_server);
 }
 
-bool Server::init(char *service_name)
-{
+bool Server::init(char *service_name) {
     g_env_config_client = env_config_new();
     g_config_mgr = get_config_mgr();
     char* TOPICS[] = {m_app_name};
     size_t num_of_topics_pub = g_env_config_client->get_topics_count(TOPICS);
-    config_t* service_config = g_env_config_client->get_messagebus_config(g_config_mgr, TOPICS, num_of_topics_pub,"server");
+    config_t* service_config = g_env_config_client->get_messagebus_config(
+                               g_config_mgr, TOPICS, num_of_topics_pub,
+                               "server");
     g_msgbus_ctx_server = msgbus_initialize(service_config);
-    if(g_msgbus_ctx_server == NULL) {
+    if (g_msgbus_ctx_server == NULL) {
         LOG_ERROR_0("Failed to initialize message bus");
         goto err;
     }
 
-    msgbus_ret_t ret ;
-    ret = msgbus_service_new(g_msgbus_ctx_server, m_app_name, NULL, &g_service_ctx);
-    if(ret != MSG_SUCCESS) {
+    msgbus_ret_t ret;
+    ret = msgbus_service_new(g_msgbus_ctx_server, m_app_name, NULL,
+                             &g_service_ctx);
+    if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);
         goto err;
     }
 
     return true;
 err:
-    if(g_service_ctx != NULL)
+    if (g_service_ctx != NULL)
         msgbus_recv_ctx_destroy(g_msgbus_ctx_server, g_service_ctx);
-    if(g_msgbus_ctx_server != NULL)
+    if (g_msgbus_ctx_server != NULL)
         msgbus_destroy(g_msgbus_ctx_server);
-    
+
     return false;
 }
 
-void* Server::start(void *arg)
-{
+void* Server::start(void *arg) {
     int ret_val = -1;
-    Server *obj = (Server*)arg ;
-    
-    if( ( ret_val = obj->server_service() ) != 0 ){
+    Server *obj = reinterpret_cast<Server*>(arg);
+
+    if ((ret_val = obj->server_service()) != 0) {
         LOG_ERROR("server failed.(errno: %d)", ret_val);
     }
     delete obj;
 }
 
 int Server::server_service() {
-
     int ret = 0;
     LOG_INFO_0("Running...");
-    while(*loop) {
-                ret = msgbus_recv_wait(g_msgbus_ctx_server, g_service_ctx, &msg);
-        if(ret != MSG_SUCCESS) {
+    while (*loop) {
+                ret = msgbus_recv_wait(g_msgbus_ctx_server, g_service_ctx,
+                                       &msg);
+        if (ret != MSG_SUCCESS) {
             // Interrupt is an acceptable error
-            if(ret == MSG_ERR_EINTR)
+            if (ret == MSG_ERR_EINTR)
                 break;
             LOG_ERROR("Failed to receive message (errno: %d)", ret);
             goto err;
         }
 
         num_parts = msgbus_msg_envelope_serialize(msg, &parts);
-        if(num_parts <= 0) {
+        if (num_parts <= 0) {
             LOG_ERROR_0("Failed to serialize message");
             goto err;
         }
         LOG_INFO("Received Request at server: %s", parts[0].bytes);
         // Responding
         ret = msgbus_response(g_msgbus_ctx_server, g_service_ctx, msg);
-        if(ret != MSG_SUCCESS) {
+        if (ret != MSG_SUCCESS) {
             LOG_ERROR("Failed to send response (errno: %d)", ret);
             goto err;
         }
@@ -122,19 +122,19 @@ int Server::server_service() {
         parts = NULL;
     }
 
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
 
     return 0;
 
 err:
-    if(msg != NULL)
+    if (msg != NULL)
         msgbus_msg_envelope_destroy(msg);
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
-    if(g_service_ctx != NULL)
+    if (g_service_ctx != NULL)
         msgbus_recv_ctx_destroy(g_msgbus_ctx_server, g_service_ctx);
-    if(g_msgbus_ctx_server != NULL)
+    if (g_msgbus_ctx_server != NULL)
         msgbus_destroy(g_msgbus_ctx_server);
     return -1;
 }

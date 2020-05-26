@@ -19,14 +19,12 @@
 # SOFTWARE.
 
 
-# Dockerfile for Python_sample_publisher
+# Dockerfile for Python_sample_subscriber
 ARG EIS_VERSION
-FROM ia_eisbase:$EIS_VERSION as eisbase
+ARG DOCKER_REGISTRY
+FROM ${DOCKER_REGISTRY}ia_eisbase:$EIS_VERSION as eisbase
 
 WORKDIR ${PY_WORK_DIR}
-
-ARG EIS_USER_NAME
-RUN adduser --quiet --disabled-password ${EIS_USER_NAME}
 
 ENV PYTHONPATH ${PY_WORK_DIR}/
 
@@ -35,7 +33,7 @@ RUN apt-get remove -y wget && \
     apt-get remove curl && \
     apt-get autoremove -y
 
-FROM ia_common:$EIS_VERSION as common
+FROM ${DOCKER_REGISTRY}ia_common:$EIS_VERSION as common
 
 FROM eisbase
 
@@ -44,6 +42,6 @@ COPY --from=common ${GO_WORK_DIR}/common/libs ${PY_WORK_DIR}/libs
 COPY --from=common /usr/local/lib /usr/local/lib
 COPY --from=common /usr/local/lib/python3.6/dist-packages/ /usr/local/lib/python3.6/dist-packages
 
-COPY ./publisher ./publisher
+COPY ./*.py ./
 
-ENTRYPOINT ["python3.6", "-u", "publisher/main.py"]
+ENTRYPOINT ["python3.6", "-u", "main.py"]

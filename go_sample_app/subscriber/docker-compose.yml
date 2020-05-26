@@ -1,0 +1,51 @@
+version: '3.6'
+
+services:
+
+  ia_go_subscriber:
+    depends_on:
+      - ia_eisbase
+    build:
+      context: $PWD/../GoSubscriber
+      dockerfile: $PWD/../GoSubscriber/Dockerfile
+      args:
+        EIS_VERSION: ${EIS_VERSION}
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+    image: ${DOCKER_REGISTRY}ia_go_subscriber:${EIS_VERSION}
+    container_name: ia_go_subscriber 
+    hostname: ia_go_subscriber
+    network_mode: host
+    restart: unless-stopped
+    user: ${EIS_UID}
+    environment:
+      AppName: "GoSubscriber"
+      DEV_MODE: ${DEV_MODE}
+      no_proxy: ${eis_no_proxy},${ETCD_HOST}
+      ETCD_HOST: ${ETCD_HOST}
+      ETCD_PREFIX: ${ETCD_PREFIX}
+      # MessageBus Endpoint Configuration
+      CertType: "zmq"
+
+      # Use IPC mode (zmq_ipc) when VideoIngestion and VideoAnalytics based
+      # containers are running on the same host. If they are running on diff
+      # host, please use TCP mode for communication.
+      # Eg: Stream cfg for
+      # IPC: zmq_ipc, <absolute_socket_directory_path>
+      # TPC: zmq_tcp, <publisher_host>:<publisher_port>
+      SubTopics: "GoPublisher/publish_test"
+      publish_test_cfg: "zmq_tcp,127.0.0.1:60011"
+      #publish_test_cfg: "zmq_ipc,${SOCKET_DIR}/"
+      RequestEP: "GoPublisher"
+      GoPublisher_cfg: "zmq_tcp,127.0.0.1:60012"
+    volumes:
+      - "vol_eis_socket:${SOCKET_DIR}"
+    secrets:
+      - ca_etcd
+      - etcd_GoSubscriber_cert
+      - etcd_GoSubscriber_key
+
+secrets:
+  etcd_GoSubscriber_cert:
+    file: provision/Certificates/GoSubscriber/GoSubscriber_client_certificate.pem
+  etcd_GoSubscriber_key:
+    file: provision/Certificates/GoSubscriber/GoSubscriber_client_key.pem

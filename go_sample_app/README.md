@@ -26,28 +26,3 @@ receiving the data and prints the same onto a console.
 4. Client contacts to ETCD service, and fetches its private key and public
 key of server. Then it creates a client object and sends a request to the
 server and gets the response back.
-
-## `Configuration`
-1. Please replace the 
-
-   [build/docker-compose.yml](../../build/docker-compose.yml) with
-   [Samples/go_sample_app/docker-compose.yml](./docker-compose.yml)
-
-   And
-
-   [build/provision/config/eis_config.json](../../build/provision/config/eis_config.json) with
-   [Samples/go_sample_app/config/eis_config.json](./config/eis_config.json)
-
-2. Do provisioning and start containers.
-
-   ```sh
-   $ cd build/provision
-   $ sudo ./provision_eis.sh ../docker-compose.yml
-   $ cd ..
-   ```
-
-   ```sh
-   $ docker-compose build
-   $ docker-compose up -d
-   $ docker logs -f ia_go_subscriber
-   ```

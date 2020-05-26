@@ -25,70 +25,70 @@
 
 #include <signal.h>
 #include <unistd.h>
-#include "eis/msgbus/msgbus.h"
+#include <pthread.h>
 #include <eis/config_manager/env_config.h>
+#include "eis/msgbus/msgbus.h"
 #include "subscriber.h"
 #include "client.h"
-#include <pthread.h>
 #include "eis/utils/logger.h"
 
 using namespace std;
 
-pthread_t sub_thread ;
-pthread_t client_thread ;
+pthread_t sub_thread;
+pthread_t client_thread;
 std::atomic<bool> *loop;
 int start_subscriber(char *topic_name);
 int start_client(char *service_name);
 
-void signal_handler(int signo) 
-{    loop->store(false,std::memory_order_relaxed);}
+void signal_handler(int signo) {
+    loop->store(false, std::memory_order_relaxed);}
 
-int main()
-{
-	signal(SIGINT, signal_handler);
+int main() {
+    signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
-	loop = new std::atomic<bool>;
+    loop = new std::atomic<bool>;
     *loop = true;
-	if( (start_subscriber(getenv("SubTopics")) == 0) && (start_client(getenv("RequestEP")) == 0)) {
-        pthread_join(sub_thread,NULL);
-		pthread_join(client_thread,NULL);
+    if ((start_subscriber(getenv("SubTopics")) == 0) &&
+        (start_client(getenv("RequestEP")) == 0)) {
+        pthread_join(sub_thread, NULL);
+        pthread_join(client_thread, NULL);
     }
 
-	delete loop;
-	return 0;
+    delete loop;
+    return 0;
 }
 
-int start_subscriber(char *topic_name)
-{
-	Subscriber *sub = new Subscriber(loop);
+int start_subscriber(char *topic_name) {
+    Subscriber *sub = new Subscriber(loop);
     int ret_val = -1;
 
-	if(sub->init(topic_name)){
-        if((ret_val = pthread_create(&sub_thread, NULL,Subscriber::start,sub)) != 0){
-            LOG_ERROR("Unable to initialize subscriber thread, error code : %d", ret_val);
-        }
-        }else{
-            delete sub;
-            LOG_ERROR_0("Initializing subscriber object failed");
-        }
-
-        return ret_val;
+    if (sub->init(topic_name)) {
+    if ((ret_val = pthread_create(&sub_thread, NULL, Subscriber::start,
+        sub)) != 0) {
+        LOG_ERROR("Unable to initialize subscriber thread, error code : %d",
+                  ret_val);
+    }
+    } else {
+        delete sub;
+        LOG_ERROR_0("Initializing subscriber object failed");
+    }
+    return ret_val;
 }
 
-int start_client(char *service_name)
-{
-	Client *cli = new Client(loop);
-	int ret_val = -1;
+int start_client(char *service_name) {
+    Client *cli = new Client(loop);
+    int ret_val = -1;
 
-	if(cli->init(service_name)){
-		if((ret_val = pthread_create(&client_thread,NULL,Client::start,cli)) !=0){
-			LOG_ERROR("Unable to initialize client thread, error code : %d", ret_val);
-		}
-	}else{
+    if (cli->init(service_name)) {
+        if ((ret_val = pthread_create(&client_thread, NULL, Client::start,
+            cli)) !=0) {
+            LOG_ERROR("Unable to initialize client thread, error code : %d",
+                      ret_val);
+    }
+    } else {
         delete cli;
-		LOG_ERROR_0("Initializing client object failed");
-		
-	}
-	return ret_val;
+        LOG_ERROR_0("Initializing client object failed");
+    }
+    return ret_val;
 }

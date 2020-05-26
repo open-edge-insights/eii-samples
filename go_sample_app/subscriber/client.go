@@ -26,12 +26,13 @@ import (
 	eismsgbus "EISMessageBus/eismsgbus"
 	util "IEdgeInsights/common/util"
 	envconfig "EnvConfig"
+	"github.com/golang/glog"
 	"fmt"
 	"os"
 	"strconv"
 	"time"
-        "encoding/json"
-        configmgr "ConfigManager"
+	"encoding/json"
+	configmgr "ConfigManager"
 )
 
 func start_client(serviceName string) {
@@ -104,7 +105,7 @@ func get_app_config()(map[string]string, error){
 	config := util.GetCryptoMap(appName)
 	mgr := configmgr.Init("etcd", config)
 	if mgr == nil {
-		glog.Fatalf("Config Manager initialization failed...")
+		glog.Fatal("Config Manager initialization failed...")
 	}
 
         value, err := mgr.GetConfig("/" + appName + "/config")

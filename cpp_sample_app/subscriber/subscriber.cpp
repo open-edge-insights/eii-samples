@@ -24,78 +24,73 @@
 
 #include <signal.h>
 #include <unistd.h>
-#include "eis/msgbus/msgbus.h"
 #include <eis/config_manager/env_config.h>
 #include <get_config_mgr.h>
 extern "C" {
     #include <safe_str_lib.h>
 }
+#include "eis/msgbus/msgbus.h"
 #include "subscriber.h"
 
 #define SIZE 100
 
-Subscriber::Subscriber(std::atomic<bool> *loop)
-{this->loop = loop;}
+Subscriber::Subscriber(std::atomic<bool> *loop) {
+    this->loop = loop;}
 
-Subscriber::~Subscriber()
-{
-    if(msg != NULL)
+Subscriber::~Subscriber() {
+    if (msg != NULL)
         msgbus_msg_envelope_destroy(msg);
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
-    if(g_sub_ctx != NULL)
+    if (g_sub_ctx != NULL)
         msgbus_recv_ctx_destroy(g_msgbus_ctx, g_sub_ctx);
-    if(g_msgbus_ctx != NULL)
+    if (g_msgbus_ctx != NULL)
         msgbus_destroy(g_msgbus_ctx);
 }
 
-bool Subscriber::init(char *topic_name)
-{
+bool Subscriber::init(char *topic_name) {
     char* individual_topic = NULL;
     int j = 0;
     const char* pub_topic[SIZE];
-    
     g_env_config_client = env_config_new();
     g_config_mgr = get_config_mgr();
     char* TOPIC[] = {topic_name};
     size_t num_of_topics_pub = g_env_config_client->get_topics_count(TOPIC);
-    config_t* sub_config = g_env_config_client->get_messagebus_config(g_config_mgr,TOPIC,num_of_topics_pub,"sub");
+    config_t* sub_config = g_env_config_client->get_messagebus_config(
+                           g_config_mgr, TOPIC, num_of_topics_pub, "sub");
 
     g_msgbus_ctx = msgbus_initialize(sub_config);
-    if(g_msgbus_ctx == NULL) {
+    if (g_msgbus_ctx == NULL) {
         LOG_ERROR_0("Failed to initialize message bus");
         goto err;
     }
 
-    while((individual_topic = strtok_r(topic_name, "/", &topic_name))) {
+    while ((individual_topic = strtok_r(topic_name, "/", &topic_name))) {
         pub_topic[j] = individual_topic;
         j++;
     }
     msgbus_ret_t ret;
     ret = msgbus_subscriber_new(g_msgbus_ctx, pub_topic[1], NULL, &g_sub_ctx);
 
-    if(ret != MSG_SUCCESS) {
+    if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize subscriber (errno: %d)", ret);
         goto err;
     }
     return true;
-    
-err:
-    if(g_sub_ctx != NULL)
-        msgbus_recv_ctx_destroy(g_msgbus_ctx, g_sub_ctx);
-    if(g_msgbus_ctx != NULL)
-        msgbus_destroy(g_msgbus_ctx);
-    
-    return false;
 
+err:
+    if (g_sub_ctx != NULL)
+        msgbus_recv_ctx_destroy(g_msgbus_ctx, g_sub_ctx);
+    if (g_msgbus_ctx != NULL)
+        msgbus_destroy(g_msgbus_ctx);
+    return false;
 }
 
-void* Subscriber::start(void *arg)
-{
+void* Subscriber::start(void *arg) {
     int ret_val = -1;
-    Subscriber *obj = (Subscriber*)arg ;
+    Subscriber *obj = reinterpret_cast<Subscriber*>(arg);
 
-    if( ( ret_val = obj->subscribe() ) != 0 ){
+    if ((ret_val = obj->subscribe()) != 0) {
         LOG_ERROR("subscribe failed.(errno: %d)", ret_val);
     }
 
@@ -103,22 +98,21 @@ void* Subscriber::start(void *arg)
 }
 
 int Subscriber::subscribe() {
-
-    int ret=0;
+    int ret = 0;
     LOG_INFO_0("Running...");
 
-    while(loop->load()) {
+    while (loop->load()) {
         ret = msgbus_recv_wait(g_msgbus_ctx, g_sub_ctx, &msg);
-        if(ret != MSG_SUCCESS) {
+        if (ret != MSG_SUCCESS) {
             // Interrupt is an acceptable error
-            if(ret == MSG_ERR_EINTR)
+            if (ret == MSG_ERR_EINTR)
                 break;
             LOG_ERROR("Failed to receive message (errno: %d)", ret);
             goto err;
         }
 
         num_parts = msgbus_msg_envelope_serialize(msg, &parts);
-        if(num_parts <= 0) {
+        if (num_parts <= 0) {
             LOG_ERROR_0("Failed to serialize message");
             goto err;
         }
@@ -131,19 +125,19 @@ int Subscriber::subscribe() {
         parts = NULL;
     }
 
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
 
     return 0;
 
 err:
-    if(msg != NULL)
+    if (msg != NULL)
         msgbus_msg_envelope_destroy(msg);
-    if(parts != NULL)
+    if (parts != NULL)
         msgbus_msg_envelope_serialize_destroy(parts, num_parts);
-    if(g_sub_ctx != NULL)
+    if (g_sub_ctx != NULL)
         msgbus_recv_ctx_destroy(g_msgbus_ctx, g_sub_ctx);
-    if(g_msgbus_ctx != NULL)
+    if (g_msgbus_ctx != NULL)
         msgbus_destroy(g_msgbus_ctx);
     return -1;
 }

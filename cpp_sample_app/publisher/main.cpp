@@ -25,52 +25,53 @@
 
 #include <signal.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "publisher.h"
 #include "server.h"
-#include <pthread.h>
 #include "eis/utils/logger.h"
 
 
 using namespace std;
 
-pthread_t pub_thread ;
-pthread_t server_thread ;
+pthread_t pub_thread;
+pthread_t server_thread;
 std::atomic<bool> *loop;
 int start_publisher(char *topic_name);
 int start_server(char *service_name);
 
-void signal_handler(int signo) 
-{    loop->store(false,std::memory_order_relaxed);}
+void signal_handler(int signo) {
+    loop->store(false, std::memory_order_relaxed);}
 
-int main()
-{
+int main() {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
     loop = new std::atomic<bool>;
     *loop = true;
 
-    if( (start_publisher(getenv("PubTopics")) == 0) && (start_server(getenv("AppName")) == 0) ) {
-        pthread_join(pub_thread,NULL);
-        pthread_join(server_thread,NULL);
+    if ((start_publisher(getenv("PubTopics")) == 0) &&
+        (start_server(getenv("AppName")) == 0)) {
+        pthread_join(pub_thread, NULL);
+        pthread_join(server_thread, NULL);
     }
 
     delete loop;
     return 0;
 }
 
-int start_publisher(char *topic_name)
-{
+int start_publisher(char *topic_name) {
     Publisher *pub = new Publisher(loop);
     int ret_val = -1;
 
-    if(pub->init(topic_name)){
-        if((ret_val = pthread_create(&pub_thread, NULL,Publisher::start,pub)) != 0){
-            LOG_ERROR("Unable to initialize publisher thread, error code : %d", ret_val);
+    if (pub->init(topic_name)) {
+        if ((ret_val = pthread_create(&pub_thread, NULL, Publisher::start,
+            pub)) != 0) {
+            LOG_ERROR("Unable to initialize publisher thread, error code : %d",
+                      ret_val);
         }
-    }else{
+    } else {
         delete pub;
         LOG_ERROR_0("Initializing publisher object failed");
     }
@@ -78,16 +79,17 @@ int start_publisher(char *topic_name)
     return ret_val;
 }
 
-int start_server(char *service_name)
-{
+int start_server(char *service_name) {
     Server *ser = new Server(loop);
-	int ret_val = -1;
+    int ret_val = -1;
 
-    if(ser->init(service_name)){
-        if((ret_val = pthread_create(&server_thread, NULL,Server::start,ser)) != 0){
-            LOG_ERROR("Unable to initialize server thread, error code : %d", ret_val);
+    if (ser->init(service_name)) {
+        if ((ret_val = pthread_create(&server_thread, NULL, Server::start,
+            ser)) != 0) {
+            LOG_ERROR("Unable to initialize server thread, error code : %d",
+                      ret_val);
         }
-    }else{
+    } else {
             delete ser;
             LOG_ERROR_0("Initializing server object failed");
     }
