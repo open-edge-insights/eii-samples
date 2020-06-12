@@ -15,8 +15,9 @@ where each directory has it's own Dockerfile, docker-compose.yml file and config
 This can be done by following commands:
 
 ```sh
-ln -s cpp_sample_app/publisher ../../CppPublisher
-ln -s cpp_sample_app/subscriber ../../CppSubscriber
+cd ..
+ln -s Samples/cpp_sample_app/publisher CppPublisher
+ln -s Samples/cpp_sample_app/subscriber CppSubscriber
 ```
 The same can be done for Go and Python Sample Apps.
 
