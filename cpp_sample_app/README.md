@@ -29,4 +29,4 @@ The high level logical flow of Sample App is as below:
    4. Client contacts to ETCD service, and fetches its private key and public key of server. Then
       it creates a client object and sends a request to the server and gets the response back.
 
-     As mentioned in **NOTE** the subscriber and client are running inside ia_cpp_publisher container.
+      As mentioned in **NOTE** the subscriber and client are running inside ia_cpp_subscriber container.

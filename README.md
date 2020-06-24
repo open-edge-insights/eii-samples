@@ -15,10 +15,24 @@ where each directory has it's own Dockerfile, docker-compose.yml file and config
 This can be done by following commands:
 
 ```sh
-cd ..
+cd [repo]
+
 ln -s Samples/cpp_sample_app/publisher CppPublisher
 ln -s Samples/cpp_sample_app/subscriber CppSubscriber
-```
-The same can be done for Go and Python Sample Apps.
 
-**2. Refer [README.md](../README.md) to provision, build and run the Sample Apps.**
+ln -s Samples/go_sample_app/publisher GoPublisher
+ln -s Samples/go_sample_app/subscriber GoSubscriber
+
+ln -s Samples/python_sample_app/publisher PythonPublisher
+ln -s Samples/python_sample_app/subscriber PythonSubscriber
+```
+
+**2. Running [eis_builder.py](../build/eis_builder.py) to generate consolidated docker-compose.yml and eis_config.json.**
+
+```sh
+ cd [repo]/build
+
+ python3 eis_builder.py
+```
+
+**3. Refer [provision/README.md](../README.md) to provision, build and run the Sample Apps.**
