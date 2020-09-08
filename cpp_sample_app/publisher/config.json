@@ -1,3 +1,32 @@
 {
-    "loop_interval": "1"
+    "/CppPublisher/config" : {
+        "loop_interval": 1
+    },
+
+    "/CppPublisher/interfaces" : {
+        "Publishers": [
+            {
+                "Name": "sample_pub",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:60088",
+                "Topics": [
+                    "publish_test"
+                ],
+                "AllowedClients": [
+                    "CppSubscriber"
+                ]
+            }
+        ],
+
+        "Servers": [
+            {
+                "Name": "echo_service",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:60078",
+                "AllowedClients": [
+                    "CppSubscriber"
+                ]
+            }
+        ]
+    }
 }

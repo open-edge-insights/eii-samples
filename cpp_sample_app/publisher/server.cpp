@@ -27,14 +27,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <server.h>
-#include <get_config_mgr.h>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "eis/utils/logger.h"
 #include "eis/utils/json_config.h"
 
+using namespace eis::config_manager;
+
 Server::Server(std::atomic<bool> *loop) {
-    this->loop = loop;}
+    server_ch = new ConfigMgr();
+    this->loop = loop;
+}
 
 Server::~Server() {
     if (msg != NULL)
@@ -47,14 +49,12 @@ Server::~Server() {
         msgbus_destroy(g_msgbus_ctx_server);
 }
 
-bool Server::init(char *service_name) {
-    g_env_config_client = env_config_new();
-    g_config_mgr = get_config_mgr();
-    char* TOPICS[] = {m_app_name};
-    size_t num_of_topics_pub = g_env_config_client->get_topics_count(TOPICS);
-    config_t* service_config = g_env_config_client->get_messagebus_config(
-                               g_config_mgr, TOPICS, num_of_topics_pub,
-                               "server");
+bool Server::init() {
+    server_ch = new ConfigMgr();
+    // ServerCfg* server_ctx = server_ch->getServerByName("echo_service");
+    ServerCfg* server_ctx = server_ch->getServerByIndex(0);
+    config_t* service_config = server_ctx->getMsgBusConfig();
+
     g_msgbus_ctx_server = msgbus_initialize(service_config);
     if (g_msgbus_ctx_server == NULL) {
         LOG_ERROR_0("Failed to initialize message bus");
@@ -62,7 +62,7 @@ bool Server::init(char *service_name) {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_service_new(g_msgbus_ctx_server, m_app_name, NULL,
+    ret = msgbus_service_new(g_msgbus_ctx_server, "echo_service", NULL,
                              &g_service_ctx);
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);

@@ -24,8 +24,6 @@
 
 #include <signal.h>
 #include <unistd.h>
-#include <eis/config_manager/env_config.h>
-#include <get_config_mgr.h>
 extern "C" {
     #include <safe_str_lib.h>
 }
@@ -35,7 +33,9 @@ extern "C" {
 #define SIZE 100
 
 Subscriber::Subscriber(std::atomic<bool> *loop) {
-    this->loop = loop;}
+    sub_ch = new ConfigMgr();
+    this->loop = loop;
+}
 
 Subscriber::~Subscriber() {
     if (msg != NULL)
@@ -48,16 +48,12 @@ Subscriber::~Subscriber() {
         msgbus_destroy(g_msgbus_ctx);
 }
 
-bool Subscriber::init(char *topic_name) {
-    char* individual_topic = NULL;
-    int j = 0;
-    const char* pub_topic[SIZE];
-    g_env_config_client = env_config_new();
-    g_config_mgr = get_config_mgr();
-    char* TOPIC[] = {topic_name};
-    size_t num_of_topics_pub = g_env_config_client->get_topics_count(TOPIC);
-    config_t* sub_config = g_env_config_client->get_messagebus_config(
-                           g_config_mgr, TOPIC, num_of_topics_pub, "sub");
+bool Subscriber::init() {
+    // SubscriberCfg* sub_ctx = sub_ch->getSubscriberByName("sample_sub");
+    SubscriberCfg* sub_ctx = sub_ch->getSubscriberByIndex(0);
+    config_t* sub_config = sub_ctx->getMsgBusConfig();
+
+    std::vector<std::string> topics = sub_ctx->getTopics();
 
     g_msgbus_ctx = msgbus_initialize(sub_config);
     if (g_msgbus_ctx == NULL) {
@@ -65,12 +61,8 @@ bool Subscriber::init(char *topic_name) {
         goto err;
     }
 
-    while ((individual_topic = strtok_r(topic_name, "/", &topic_name))) {
-        pub_topic[j] = individual_topic;
-        j++;
-    }
     msgbus_ret_t ret;
-    ret = msgbus_subscriber_new(g_msgbus_ctx, pub_topic[1], NULL, &g_sub_ctx);
+    ret = msgbus_subscriber_new(g_msgbus_ctx, topics[0].c_str(), NULL, &g_sub_ctx);
 
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize subscriber (errno: %d)", ret);

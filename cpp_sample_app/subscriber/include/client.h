@@ -22,18 +22,20 @@
 #include <string.h>
 #include <unistd.h>
 #include <atomic>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "eis/utils/logger.h"
 #include "eis/utils/json_config.h"
+#include "eis/config_manager/config_mgr.hpp"
 
 #ifndef SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_CLIENT_H_
 #define SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_CLIENT_H_
 
+using namespace eis::config_manager;
+
+
 class Client {
  private:
-  env_config_t* g_env_config_client = NULL;
-  config_mgr_t* g_config_mgr = NULL;
+  ConfigMgr* client_ch = NULL;
   void* g_msgbus_ctx_client = NULL;
   recv_ctx_t* g_service_ctx = NULL;
   msg_envelope_serialized_part_t* parts = NULL;
@@ -44,10 +46,9 @@ class Client {
  public:
   explicit Client(std::atomic<bool> *loop);
   ~Client();
-  bool init(char *service_name);
+  bool init();
   static void* start(void *arg);
   int client_service();
-  void clean_up();
 };
 
 #endif  // SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_CLIENT_H_

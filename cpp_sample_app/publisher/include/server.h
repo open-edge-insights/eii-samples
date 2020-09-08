@@ -24,31 +24,30 @@
 #include <unistd.h>
 
 #include <atomic>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "eis/utils/logger.h"
 #include "eis/utils/json_config.h"
-
+#include "eis/config_manager/config_mgr.hpp"
 
 #ifndef SAMPLES_CPP_SAMPLE_APP_PUBLISHER_INCLUDE_SERVER_H_
 #define SAMPLES_CPP_SAMPLE_APP_PUBLISHER_INCLUDE_SERVER_H_
 
+using namespace eis::config_manager;
+
 class Server {
  private:
-        void* g_msgbus_ctx_server = NULL;
-        recv_ctx_t* g_service_ctx = NULL;
-        env_config_t* g_env_config_client = NULL;
-        config_mgr_t* g_config_mgr = NULL;
-        msg_envelope_serialized_part_t* parts = NULL;
-        int num_parts = 0;
-        msg_envelope_t* msg = NULL;
-        char* m_app_name = getenv("AppName");
-        std::atomic<bool> *loop;
+      ConfigMgr* server_ch = NULL;
+      void* g_msgbus_ctx_server = NULL;
+      recv_ctx_t* g_service_ctx = NULL;
+      msg_envelope_serialized_part_t* parts = NULL;
+      int num_parts = 0;
+      msg_envelope_t* msg = NULL;
+      std::atomic<bool> *loop;
 
  public:
         explicit Server(std::atomic<bool> *loop);
         ~Server();
-        bool init(char *service_name);
+        bool init();
         static void* start(void *arg);
         int server_service();
 };

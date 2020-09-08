@@ -26,20 +26,18 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "publisher.h"
 #include "server.h"
 #include "eis/utils/logger.h"
-
 
 using namespace std;
 
 pthread_t pub_thread;
 pthread_t server_thread;
 std::atomic<bool> *loop;
-int start_publisher(char *topic_name);
-int start_server(char *service_name);
+int start_publisher();
+int start_server();
 
 void signal_handler(int signo) {
     loop->store(false, std::memory_order_relaxed);}
@@ -48,11 +46,38 @@ int main() {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
+    // setting the LOG LEVEL
+    const char* str_log_level = NULL;
+
+    // default log level is `INFO`
+    log_lvl_t log_level = LOG_LVL_INFO;
+    set_log_level(log_level);
+
+    try {
+        str_log_level = getenv("C_LOG_LEVEL");
+        if (str_log_level == NULL) {
+            LOG_ERROR_0("C_LOG_LEVEL env not set");
+        } else {
+            if (strncmp(str_log_level, "DEBUG", 5) == 0) {
+                log_level = LOG_LVL_DEBUG;
+            } else if (strncmp(str_log_level, "INFO", 5) == 0) {
+                log_level = LOG_LVL_INFO;
+            } else if (strncmp(str_log_level, "WARN", 5) == 0) {
+                log_level = LOG_LVL_WARN;
+            } else if (strncmp(str_log_level, "ERROR", 5) == 0) {
+                log_level = LOG_LVL_ERROR;
+            }
+        }
+    } catch(std::exception e){
+        LOG_ERROR("Error in setting log level %s", e.what());
+    }
+
+    set_log_level(log_level);
+
     loop = new std::atomic<bool>;
     *loop = true;
 
-    if ((start_publisher(getenv("PubTopics")) == 0) &&
-        (start_server(getenv("AppName")) == 0)) {
+    if (start_publisher()  == 0 && start_server() == 0) {
         pthread_join(pub_thread, NULL);
         pthread_join(server_thread, NULL);
     }
@@ -61,11 +86,12 @@ int main() {
     return 0;
 }
 
-int start_publisher(char *topic_name) {
+int start_publisher() {
     Publisher *pub = new Publisher(loop);
     int ret_val = -1;
 
-    if (pub->init(topic_name)) {
+    if (pub->init()) {
+        LOG_INFO_0("Before thread started..\n");
         if ((ret_val = pthread_create(&pub_thread, NULL, Publisher::start,
             pub)) != 0) {
             LOG_ERROR("Unable to initialize publisher thread, error code : %d",
@@ -79,11 +105,11 @@ int start_publisher(char *topic_name) {
     return ret_val;
 }
 
-int start_server(char *service_name) {
+int start_server() {
     Server *ser = new Server(loop);
     int ret_val = -1;
 
-    if (ser->init(service_name)) {
+    if (ser->init()) {
         if ((ret_val = pthread_create(&server_thread, NULL, Server::start,
             ser)) != 0) {
             LOG_ERROR("Unable to initialize server thread, error code : %d",

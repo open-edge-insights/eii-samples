@@ -26,7 +26,6 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "subscriber.h"
 #include "client.h"
@@ -37,8 +36,8 @@ using namespace std;
 pthread_t sub_thread;
 pthread_t client_thread;
 std::atomic<bool> *loop;
-int start_subscriber(char *topic_name);
-int start_client(char *service_name);
+int start_subscriber();
+int start_client();
 
 void signal_handler(int signo) {
     loop->store(false, std::memory_order_relaxed);}
@@ -47,10 +46,38 @@ int main() {
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
 
+    // setting the LOG LEVEL
+    const char* str_log_level = NULL;
+
+    // default log level is `INFO`
+    log_lvl_t log_level = LOG_LVL_INFO;
+    set_log_level(log_level);
+
+    try {
+        str_log_level = getenv("C_LOG_LEVEL");
+        if (str_log_level == NULL) {
+            LOG_ERROR_0("C_LOG_LEVEL env not set");
+        } else {
+            if (strncmp(str_log_level, "DEBUG", 5) == 0) {
+                log_level = LOG_LVL_DEBUG;
+            } else if (strncmp(str_log_level, "INFO", 5) == 0) {
+                log_level = LOG_LVL_INFO;
+            } else if (strncmp(str_log_level, "WARN", 5) == 0) {
+                log_level = LOG_LVL_WARN;
+            } else if (strncmp(str_log_level, "ERROR", 5) == 0) {
+                log_level = LOG_LVL_ERROR;
+            }
+        }
+    } catch(std::exception e){
+        LOG_ERROR("Error in setting log level %s", e.what());
+    }
+
+    set_log_level(log_level);
+
     loop = new std::atomic<bool>;
     *loop = true;
-    if ((start_subscriber(getenv("SubTopics")) == 0) &&
-        (start_client(getenv("RequestEP")) == 0)) {
+    if ((start_subscriber() == 0) && 
+        (start_client() == 0)) {
         pthread_join(sub_thread, NULL);
         pthread_join(client_thread, NULL);
     }
@@ -59,11 +86,11 @@ int main() {
     return 0;
 }
 
-int start_subscriber(char *topic_name) {
+int start_subscriber() {
     Subscriber *sub = new Subscriber(loop);
     int ret_val = -1;
 
-    if (sub->init(topic_name)) {
+    if (sub->init()) {
     if ((ret_val = pthread_create(&sub_thread, NULL, Subscriber::start,
         sub)) != 0) {
         LOG_ERROR("Unable to initialize subscriber thread, error code : %d",
@@ -76,11 +103,11 @@ int start_subscriber(char *topic_name) {
     return ret_val;
 }
 
-int start_client(char *service_name) {
+int start_client() {
     Client *cli = new Client(loop);
     int ret_val = -1;
 
-    if (cli->init(service_name)) {
+    if (cli->init()) {
         if ((ret_val = pthread_create(&client_thread, NULL, Client::start,
             cli)) !=0) {
             LOG_ERROR("Unable to initialize client thread, error code : %d",

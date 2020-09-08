@@ -25,17 +25,17 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
 #include "publisher.h"
-#include <get_config_mgr.h>
-#include <get_app_config.h>
+
+#include "eis/utils/json_config.h"
 
 #define MAX_CONFIG_KEY_LENGTH 40
-char* cpp_pub_config = NULL;
 
 Publisher::Publisher(std::atomic<bool> *loop) {
-    this->loop = loop;}
+    pub_ch = new ConfigMgr();
+    this->loop = loop;
+}
 
 Publisher::~Publisher() {
     if (m_pub_ctx != NULL)
@@ -44,13 +44,16 @@ Publisher::~Publisher() {
         msgbus_destroy(g_msgbus_ctx);
 }
 
-bool Publisher::init(char* topic_name) {
-    g_env_config_client = env_config_new();
-    g_config_mgr = get_config_mgr();
-    char* topic[] = {topic_name};
-    size_t num_of_topics_pub = g_env_config_client->get_topics_count(topic);
-    config_t* pub_config = g_env_config_client->get_messagebus_config(
-                           g_config_mgr, topic, num_of_topics_pub, "pub");
+bool Publisher::init() {
+    PublisherCfg* pub_ctx = pub_ch->getPublisherByIndex(0);
+    // PublisherCfg* pub_ctx = pub_ch->getPublisherByName("sample_pub");
+    config_t* pub_config = pub_ctx->getMsgBusConfig();
+
+    // get all Publisher Topics 
+    std::vector<std::string> topics = pub_ctx->getTopics();
+    for(int i = 0; i < topics.size(); i++) {
+        LOG_INFO("Pub Topics : %s", topics[i].c_str());
+    }
 
     g_msgbus_ctx = msgbus_initialize(pub_config);
     if (g_msgbus_ctx == NULL) {
@@ -59,7 +62,7 @@ bool Publisher::init(char* topic_name) {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_publisher_new(g_msgbus_ctx, topic_name, &m_pub_ctx);
+    ret = msgbus_publisher_new(g_msgbus_ctx, topics[0].c_str(), &m_pub_ctx);
 
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize publisher (errno: %d)", ret);
@@ -88,56 +91,21 @@ void* Publisher::start(void *arg) {
     delete obj;
 }
 
-
-void Publisher::clean_up() {
-    config_mgr_config_destroy(g_config_mgr);
-    env_config_destroy(g_env_config_client);
-}
-
 int Publisher::publish() {
     int ret = 0;
     LOG_INFO_0("Running...");
     int sleep_val = 0;
     unsigned seed = 1;
     try {
-        // setting the LOG LEVEL
-        char* str_log_level = NULL;
-        log_lvl_t log_level = LOG_LVL_ERROR;  // default log level is `ERROR`
-
-        str_log_level = getenv("C_LOG_LEVEL");
-        if (str_log_level == NULL) {
-            throw "\"C_LOG_LEVEL\" env not set";
-        } else {
-            if (strncmp(str_log_level, "DEBUG", 5) == 0) {
-                log_level = LOG_LVL_DEBUG;
-            } else if (strncmp(str_log_level, "INFO", 5) == 0) {
-                log_level = LOG_LVL_INFO;
-            } else if (strncmp(str_log_level, "WARN", 5) == 0) {
-                log_level = LOG_LVL_WARN;
-            } else if (strncmp(str_log_level, "ERROR", 5) == 0) {
-                log_level = LOG_LVL_ERROR;
-            }
+        AppCfg* cfg = pub_ch->getAppConfig();
+        config_value_t* app_config = cfg->getConfigValue("loop_interval");
+        if (app_config->type != CVT_INTEGER) {
+            LOG_ERROR_0("loop_interval is not integer");
+            exit(1);
         }
-        set_log_level(log_level);
-
-        std::string app_name = "";
-        char* str_app_name = NULL;
-        str_app_name = getenv("AppName");
-        if (str_app_name == NULL) {
-            throw "\"AppName\" env not set";
-            } else {
-                app_name = str_app_name;
-        }
-        // Get the configuration from the configuration manager
-        char config_key[MAX_CONFIG_KEY_LENGTH];
-        snprintf(config_key, MAX_CONFIG_KEY_LENGTH, "/%s/config",
-                 app_name.c_str());
-        cpp_pub_config = g_config_mgr->get_config(config_key);
-        LOG_DEBUG("App config: %s", cpp_pub_config);
-        sleep_val = get_app_config(cpp_pub_config);
+        sleep_val = app_config->body.integer;
     }catch(const std::exception& ex) {
         LOG_ERROR("Exception '%s' occurred", ex.what());
-        clean_up();
     }
     while (loop->load()) {
         LOG_INFO_0("Publishing message");

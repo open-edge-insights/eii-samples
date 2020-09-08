@@ -33,8 +33,7 @@ ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/lib
 # Adding project depedency modules
 COPY ./*.cpp ./
 COPY ./include ./include
-COPY ./util ./util
 
-RUN g++ -o ./main ./*.cpp ./util/*.cpp -I./include -leismsgbus -lsafestring -leisconfigmgr -leisutils -leismsgenv -lpthread
+RUN g++ -o ./main ./*.cpp -I./include -leismsgbus -lsafestring -leisutils -leismsgenv -lneweisconfigmgr -lpthread
 
 ENTRYPOINT ["/EIS/go/src/IEdgeInsights/main"]

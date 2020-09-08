@@ -20,18 +20,20 @@
 #include <signal.h>
 #include <unistd.h>
 #include <atomic>
-#include <eis/config_manager/env_config.h>
 #include "eis/msgbus/msgbus.h"
+#include "eis/config_manager/config_mgr.hpp"
 
 #ifndef SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_SUBSCRIBER_H_
 #define SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_SUBSCRIBER_H_
 
+using namespace eis::config_manager;
+
+
 class Subscriber {
  private:
+  ConfigMgr* sub_ch = NULL;
   recv_ctx_t* g_sub_ctx = NULL;
   void* g_msgbus_ctx = NULL;
-  env_config_t* g_env_config_client = NULL;
-  config_mgr_t* g_config_mgr = NULL;
   msg_envelope_t* msg = NULL;
   msg_envelope_serialized_part_t* parts = NULL;
   int num_parts = 0;
@@ -40,7 +42,7 @@ class Subscriber {
  public:
   explicit Subscriber(std::atomic<bool> *loop);
   ~Subscriber();
-  bool init(char *topic_name);
+  bool init();
   static void* start(void *arg);
   int subscribe();
 };

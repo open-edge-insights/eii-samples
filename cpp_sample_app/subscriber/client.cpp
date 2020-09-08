@@ -31,14 +31,14 @@
 #include "eis/utils/logger.h"
 #include "eis/utils/json_config.h"
 #include "client.h"
-#include <get_config_mgr.h>
-#include <get_app_config.h>
 
 #define MAX_CONFIG_KEY_LENGTH 40
 char* cpp_sub_config = NULL;
 
 Client::Client(std::atomic<bool> *loop) {
-    this->loop = loop;}
+    client_ch = new ConfigMgr();
+    this->loop = loop;
+}
 
 Client::~Client() {
     if (msg != NULL)
@@ -51,14 +51,11 @@ Client::~Client() {
         msgbus_destroy(g_msgbus_ctx_client);
 }
 
-bool Client::init(char *service_name) {
-    g_env_config_client = env_config_new();
-    g_config_mgr = get_config_mgr();
-    char* TOPICS[] = {service_name};
-    size_t num_of_topics_pub = g_env_config_client->get_topics_count(TOPICS);
-    config_t* config_client = g_env_config_client->get_messagebus_config(
-                              g_config_mgr, TOPICS, num_of_topics_pub,
-                              "client");
+bool Client::init() {
+    // ClientCfg* client_ctx = client_ch->getClientByName("sample_client");
+    ClientCfg* client_ctx = client_ch->getClientByIndex(0);
+    config_t* config_client = client_ctx->getMsgBusConfig();
+
     g_msgbus_ctx_client = msgbus_initialize(config_client);
     if (g_msgbus_ctx_client == NULL) {
         LOG_ERROR_0("Failed to initialize message bus");
@@ -66,7 +63,7 @@ bool Client::init(char *service_name) {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_service_get(g_msgbus_ctx_client, service_name, NULL,
+    ret = msgbus_service_get(g_msgbus_ctx_client, "echo_service", NULL,
                              &g_service_ctx);
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);
@@ -93,54 +90,20 @@ void* Client::start(void *arg) {
     delete obj;
 }
 
-void Client::clean_up() {
-    config_mgr_config_destroy(g_config_mgr);
-    env_config_destroy(g_env_config_client);
-}
-
 int Client::client_service() {
     int ret = 0;
     int sleep_val = 0;
     unsigned seed = 1;
     try {
-        // setting the LOG LEVEL
-        char* str_log_level = NULL;
-        log_lvl_t log_level = LOG_LVL_ERROR;  // default log level is `ERROR`
-
-        str_log_level = getenv("C_LOG_LEVEL");
-        if (str_log_level == NULL) {
-            throw "\"C_LOG_LEVEL\" env not set";
-        } else {
-            if (strncmp(str_log_level, "DEBUG", 5) == 0) {
-                log_level = LOG_LVL_DEBUG;
-            } else if (strncmp(str_log_level, "INFO", 5) == 0) {
-                log_level = LOG_LVL_INFO;
-            } else if (strncmp(str_log_level, "WARN", 5) == 0) {
-                log_level = LOG_LVL_WARN;
-            } else if (strncmp(str_log_level, "ERROR", 5) == 0) {
-                log_level = LOG_LVL_ERROR;
-            }
+        AppCfg* cfg = client_ch->getAppConfig();
+        config_value_t* app_config = cfg->getConfigValue("loop_interval");
+        if (app_config->type != CVT_INTEGER) {
+            LOG_ERROR_0("loop_interval is not integer");
+            exit(1);
         }
-        set_log_level(log_level);
-
-        std::string app_name = "";
-        char* str_app_name = NULL;
-        str_app_name = getenv("AppName");
-        if (str_app_name == NULL) {
-            throw "\"AppName\" env not set";
-            } else {
-                app_name = str_app_name;
-        }
-        // Get the configuration from the configuration manager
-        char config_key[MAX_CONFIG_KEY_LENGTH];
-        snprintf(config_key, MAX_CONFIG_KEY_LENGTH, "/%s/config",
-                 app_name.c_str());
-        cpp_sub_config = g_config_mgr->get_config(config_key);
-        LOG_DEBUG("App config: %s", cpp_sub_config);
-        sleep_val = get_app_config(cpp_sub_config);
+        sleep_val = app_config->body.integer;
     }catch(const std::exception& ex) {
         LOG_ERROR("Exception '%s' occurred", ex.what());
-        clean_up();
     }
 
     while (*loop) {
