@@ -1,0 +1,32 @@
+{
+    "Subscribers": [
+            {
+                "Name": "Cam1_Results",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:65014",
+                "AppName": "VideoIngestion1",
+                "Topics": [
+                    "*"
+                ]
+            },
+            {
+                "Name": "Cam2_Results",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:65020",
+                "AppName": "VideoAnalytics",
+                "Topics": [
+                    "camera1_stream_results"
+                ]
+            }
+        ],
+        
+    "Clients": [
+        {
+            "Name": "Visualizer",
+            "AppName": "echo_service",
+            "Type": "zmq_tcp",
+            "EndPoint": "127.0.0.1:66021"
+        }
+    ]
+}
+    

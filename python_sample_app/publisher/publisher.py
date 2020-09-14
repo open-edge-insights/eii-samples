@@ -27,6 +27,7 @@ import json
 from distutils.util import strtobool
 from eis.env_config import EnvConfig
 from eis.config_manager import ConfigManager
+import cfgmgr.config_manager as cfg
 from util.util import Util
 
 
@@ -34,31 +35,19 @@ def start_publisher(topic_string):
     publisher = None
 
     try:
-        topics_list_pub = EnvConfig.get_topics_from_env("pub")
-
-        app_name = os.environ["AppName"]
-        clients = os.environ["Clients"].split(',')
-        conf = Util.get_crypto_dict(app_name)
-        cfg_mgr = ConfigManager()
-        config_client = cfg_mgr.get_config_client("etcd", conf)
-        dev_mode = bool(strtobool(os.environ["DEV_MODE"]))
-
-        topic = topics_list_pub[0]
-        topic = topic.strip()
-
-        msgbus_cfg = EnvConfig.get_messagebus_config(topic, "pub",
-                                                      clients,
-                                                      config_client,
-                                                      dev_mode)
-
-        app_config = config_client.GetConfig("/" + app_name + "/config")
-        app_config_dict = json.loads(app_config)
+        ctx = cfg.ConfigMgr()
+        pub_ctx = ctx.get_publisher_by_name("Image_Metadata")
+        msgbus_cfg = pub_ctx.get_msgbus_config()
 
         print('[INFO] Initializing message bus context')
         msgbus_pub = mb.MsgbusContext(msgbus_cfg)
 
-        print(f'[INFO] Initializing publisher for topic \'{topic_string}\'')
-        publisher = msgbus_pub.new_publisher(topic_string)
+        topics = pub_ctx.get_topics()
+        print(f'[INFO] Initializing publisher for topic \'{topics[0]}\'')
+        publisher = msgbus_pub.new_publisher(topics[0])
+
+        app_cfg = ctx.get_app_config()
+        print(f'App Config is  \'{app_cfg}\'')
 
         print('[INFO] Running...')
         while True:
@@ -74,7 +63,8 @@ def start_publisher(topic_string):
             }
 
             publisher.publish((meta, blob,))
-            time.sleep(int(app_config_dict["loop_interval"]))
+            print(f'[INFO] Msg published by publisher :  \'{meta}\'')
+            time.sleep(int(app_cfg["loop_interval"]))
     except KeyboardInterrupt:
         print('[INFO] Quitting...')
     finally:

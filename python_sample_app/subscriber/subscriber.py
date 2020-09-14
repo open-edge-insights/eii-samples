@@ -25,42 +25,33 @@ import os
 from eis.config_manager import ConfigManager
 from distutils.util import strtobool
 from eis.env_config import EnvConfig
+import cfgmgr.config_manager as cfg
 from util.util import Util
 
 
-def start_subscriber(topic_string):
+def start_subscriber():
     subscriber = None
 
     try:
-        topics_list_sub = EnvConfig.get_topics_from_env("sub")
-
-        app_name = os.environ["AppName"]
-        conf = Util.get_crypto_dict(app_name)
-        cfg_mgr = ConfigManager()
-        config_client = cfg_mgr.get_config_client("etcd", conf)
-        dev_mode = bool(strtobool(os.environ["DEV_MODE"]))
-
-        topic = topics_list_sub[0]
-        publisher, topic = topic.split("/")
-        topic = topic.strip()
-
-        msgbus_cfg = EnvConfig.get_messagebus_config(topic, "sub",
-                                                      publisher,
-                                                      config_client,
-                                                      dev_mode)
+        
+        ctx = cfg.ConfigMgr()
+        sub_ctx = ctx.get_subscriber_by_name("Cam2_Results")
+        msgbus_cfg = sub_ctx.get_msgbus_config()
 
         print('[INFO] Initializing message bus context')
         msgbus_sub = mb.MsgbusContext(msgbus_cfg)
 
-        print(f'[INFO] Initializing subscriber for topic {topic}')
-        subscriber = msgbus_sub.new_subscriber(topic)
+        topics = sub_ctx.get_topics()
+
+        print(f'[INFO] Initializing subscriber for topic {topics[0]}')
+        subscriber = msgbus_sub.new_subscriber(topics[0])
 
         print('[INFO] Running...')
 
         while True:
             msg, _ = subscriber.recv()
             if msg is not None:
-                print(f'[INFO] RECEIVED: {msg}')
+                print(f'[INFO] RECEIVED by subscriber : {msg}')
             else:
                 print('[INFO] Receive interrupted')
     except KeyboardInterrupt:

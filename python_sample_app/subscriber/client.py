@@ -27,36 +27,31 @@ import json
 from distutils.util import strtobool
 from eis.env_config import EnvConfig
 from eis.config_manager import ConfigManager
+import cfgmgr.config_manager as cfg
 from util.util import Util
 
 
-def start_client(server_name):
+def start_client():
     msgbus = None
     service = None
 
     try:
         print('[INFO] Initializing message bus context')
 
-        app_name = os.environ["AppName"]
-        conf = Util.get_crypto_dict(app_name)
-        cfg_mgr = ConfigManager()
-        config_client = cfg_mgr.get_config_client("etcd", conf)
-        dev_mode = bool(strtobool(os.environ["DEV_MODE"]))
+        ctx = cfg.ConfigMgr()
+        client_ctx = ctx.get_client_by_name("Visualizer")
+        msgbus_cfg = client_ctx.get_msgbus_config()
 
-        msgbus_cfg = EnvConfig.get_messagebus_config(server_name, "client",
-                                                      server_name,
-                                                      config_client, dev_mode)
         msgbus = mb.MsgbusContext(msgbus_cfg)
+        print(f'[INFO] Initializing service for {"echo_service"}')
 
-        app_config = config_client.GetConfig("/" + app_name + "/config")
-        app_config_dict = json.loads(app_config)
-
-        print(f'[INFO] Initializing service for {server_name}')
-        service = msgbus.get_service(server_name)
-
+        service = msgbus.get_service("echo_service")
         # Request used for the example
         request = {'int': 42, 'float': 55.5,
                    'str': 'Hello, World!', 'bool': True}
+
+        app_cfg = ctx.get_app_config()
+        print(f'App Config is  \'{app_cfg}\'')
 
         print('[INFO] Running...')
         while True:
@@ -65,7 +60,7 @@ def start_client(server_name):
             print('[INFO] Waiting for response')
             response, _ = service.recv()
             print(f'[INFO] Received response: {response}')
-            time.sleep(int(app_config_dict["loop_interval"]))
+            time.sleep(int(app_cfg["loop_interval"]))
     except KeyboardInterrupt:
         print('[INFO] Quitting...')
     finally:

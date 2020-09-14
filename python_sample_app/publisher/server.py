@@ -25,6 +25,7 @@ import os
 from distutils.util import strtobool
 from eis.env_config import EnvConfig
 from eis.config_manager import ConfigManager
+import cfgmgr.config_manager as cfg
 from util.util import Util
 
 
@@ -36,25 +37,18 @@ def start_server():
     try:
         print('[INFO] Initializing message bus context')
 
-        app_name = os.environ["AppName"]
-        clients = os.environ["Clients"].split(',')
-        conf = Util.get_crypto_dict(app_name)
-        cfg_mgr = ConfigManager()
-        config_client = cfg_mgr.get_config_client("etcd", conf)
-        dev_mode = bool(strtobool(os.environ["DEV_MODE"]))
-
-        msgbus_cfg = EnvConfig.get_messagebus_config(app_name, "server",
-                                                      clients,
-                                                      config_client, dev_mode)
+        ctx = cfg.ConfigMgr()
+        server_ctx = ctx.get_server_by_name("echo_service")
+        msgbus_cfg = server_ctx.get_msgbus_config()
         msgbus = mb.MsgbusContext(msgbus_cfg)
 
         print(f'[INFO] Initializing service for PythonServer')
-        service = msgbus.new_service(os.environ["AppName"])
+        service = msgbus.new_service("echo_service")
 
         print('[INFO] Running...')
         while True:
             request, _ = service.recv()
-            print(f'[INFO] Received request: {request}')
+            print(f'[INFO] Received request from client: {request}')
             service.response(request)
     except KeyboardInterrupt:
         print('[INFO] Quitting...')
