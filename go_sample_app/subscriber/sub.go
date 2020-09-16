@@ -24,21 +24,30 @@ package main
 
 import (
 	eismsgbus "EISMessageBus/eismsgbus"
-	util "IEdgeInsights/common/util"
-	envconfig "EnvConfig"
+	eiscfgmgr "ConfigMgr/eisconfigmgr"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 	"time"
 )
 
-func start_subscriber(topic string) {
-	mode := os.Getenv("DEV_MODE")
-	devMode, err := strconv.ParseBool(mode)
+func start_subscriber() {
 
-	config, err := readSubConfig(topic, devMode)
+	configmgr, _ := eiscfgmgr.NewConfigMgr()
+
+	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
+	subctx, _ := configmgr.GetSubscriberByIndex(0)
+	config, err := subctx.GetMsgbusConfig()
+	if(err != nil) {
+		fmt.Printf("-- Error get message bus config: %v\n", err)
+		return
+	}
+	
+	topics := subctx.GetTopics()
+
+	endpoint := subctx.GetEndPoints()
+	fmt.Printf("Subscriber endpoint:%s", endpoint)
+
 	fmt.Printf("-- Initializing message bus context for sub %v\n", config)
+
 	client, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
@@ -46,9 +55,7 @@ func start_subscriber(topic string) {
 	}
 	defer client.Close()
 
-	subTopics := strings.Split(topic, "/")
-	fmt.Printf("-- Subscribing to topic %s\n", subTopics[1])
-	subscriber, err := client.NewSubscriber(subTopics[1])
+	subscriber, err := client.NewSubscriber(topics[0])
 	if err != nil {
 		fmt.Printf("-- Error subscribing to topic: %v\n", err)
 		return
@@ -67,10 +74,4 @@ func start_subscriber(topic string) {
 
 		time.Sleep(1 * time.Second)
 	}
-}
-
-func readSubConfig(topicName string, devMode bool) (map[string]interface{}, error) {
-	appName := os.Getenv("AppName")
-	cfgMgrConfig := util.GetCryptoMap(appName)
-	return envconfig.GetMessageBusConfig(topicName, "sub", devMode, cfgMgrConfig), nil
 }

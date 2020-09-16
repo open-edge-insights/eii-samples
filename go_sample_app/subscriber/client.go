@@ -24,25 +24,37 @@ package main
 
 import (
 	eismsgbus "EISMessageBus/eismsgbus"
-	util "IEdgeInsights/common/util"
-	envconfig "EnvConfig"
+	eiscfgmgr "ConfigMgr/eisconfigmgr"
 	"github.com/golang/glog"
 	"fmt"
-	"os"
 	"strconv"
 	"time"
-	"encoding/json"
-	configmgr "ConfigManager"
 )
 
-func start_client(serviceName string) {
-	mode := os.Getenv("DEV_MODE")
-	devMode, err := strconv.ParseBool(mode)
+func start_client() {
+	serviceName := "echo_service"
 
-	config1, err := readClientConfig(serviceName, devMode)
-	fmt.Printf("-- Initializing message bus context for client %v", config1)
+	configmgr, err := eiscfgmgr.NewConfigMgr()
 
-	client1, err := eismsgbus.NewMsgbusClient(config1)
+	if(err != nil) {
+		glog.Fatal("Config Manager initialization failed...")
+	}
+
+	// clientctx, err := configmgr.GetClientByName("echo_client")
+	clientctx, err := configmgr.GetClientByIndex(0)
+	if err != nil {
+		glog.Fatalf("-- Error to get client object: %v\n", err)
+	}
+
+	config, err := clientctx.GetMsgbusConfig()
+
+	if err != nil {
+		glog.Fatalf("-- Error to get message bus config: %v\n", err)
+	}
+
+	fmt.Printf("-- Initializing message bus context for client %v", config)
+
+	client1, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
 		return
@@ -61,8 +73,13 @@ func start_client(serviceName string) {
 	req := map[string]interface{}{"command": "C"}
 	count := 1
 
-        data, err := get_app_config()
-        loop_interval, _ := time.ParseDuration(data["loop_interval"])
+	data, err := configmgr.GetAppConfig()
+	if err != nil {
+		fmt.Println("Error found to get app config:", err)
+	}
+
+	strdata := fmt.Sprintf("%v", data["loop_interval"])
+	loop_interval, _ := time.ParseDuration(strdata+"s")
 
 	for {
 		var cmd interface{} = req["command"].(string) + strconv.Itoa(count)
@@ -81,7 +98,6 @@ func start_client(serviceName string) {
 			return
 		}
 
-		//fmt.Printf("-- Sent Request %v", req)
 		res, err := serviceRequester.ReceiveResponse(-1)
 		if err != nil {
 			fmt.Printf("-- Error receiving response: %v\n", err)
@@ -93,31 +109,3 @@ func start_client(serviceName string) {
 	}
 }
 
-func readClientConfig(serviceName string, devMode bool) (map[string]interface{}, error) {
-	appName := os.Getenv("AppName")
-	cfgMgrConfig := util.GetCryptoMap(appName)
-	return envconfig.GetMessageBusConfig(serviceName, "client", devMode, cfgMgrConfig), nil
-}
-
-func get_app_config()(map[string]string, error){
-        data := make(map[string]string)
-        appName := os.Getenv("AppName")
-	config := util.GetCryptoMap(appName)
-	mgr := configmgr.Init("etcd", config)
-	if mgr == nil {
-		glog.Fatal("Config Manager initialization failed...")
-	}
-
-        value, err := mgr.GetConfig("/" + appName + "/config")
-        if err != nil {
-                fmt.Printf("Not able to read value from etcd for /%v/config", appName)
-                return nil, err
-        }
-
-        err = json.Unmarshal([]byte(value), &data)
-        if err != nil {
-                fmt.Printf("json error: %s", err.Error())
-                return nil, err
-        }
-        return data,nil
-}

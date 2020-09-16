@@ -23,27 +23,41 @@ SOFTWARE.
 package main
 
 import (
+	eiscfgmgr "ConfigMgr/eisconfigmgr"
 	eismsgbus "EISMessageBus/eismsgbus"
-	util "IEdgeInsights/common/util"
-	envconfig "EnvConfig"
+	"github.com/golang/glog"
 	"fmt"
-	"os"
-	"strconv"
 )
 
 func start_server() {
-	mode := os.Getenv("DEV_MODE")
-	devMode, err := strconv.ParseBool(mode)
-	sConfig, err := readServerConfig(devMode)
-	fmt.Printf("-- Initializing message bus context for server %v\n", sConfig)
-	sClient, err := eismsgbus.NewMsgbusClient(sConfig)
+	
+	serviceName := "echo_service"
+
+	configmgr, err := eiscfgmgr.NewConfigMgr()
+
+	if(err != nil) {
+		glog.Fatal("Config Manager initialization failed...")
+	}
+
+	// serverctx, err := configmgr.GetSeverByName("echo_service")
+	serverctx,_ := configmgr.GetSeverByIndex(0)
+	if(err != nil) {
+		glog.Fatal("GetServerByIndex is failed")
+	}
+	
+
+	config, err := serverctx.GetMsgbusConfig()
+	if(err != nil) {
+		glog.Fatal("Error occured with error:%v", err)
+	}
+
+	sClient, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
 		return
 	}
 	defer sClient.Close()
 
-	serviceName := os.Getenv("AppName")
 	fmt.Printf("-- Initializing service %s\n", serviceName)
 	service, err := sClient.NewService(serviceName)
 	if err != nil {
@@ -61,10 +75,4 @@ func start_server() {
 		fmt.Printf("--Server received request: %v\n", req)
 		service.Response(map[string]interface{}{"Response": "OK"})
 	}
-}
-
-func readServerConfig(devMode bool) (map[string]interface{}, error) {
-	appName := os.Getenv("AppName")
-	cfgMgrConfig := util.GetCryptoMap(appName)
-	return envconfig.GetMessageBusConfig(appName, "server", devMode, cfgMgrConfig), nil
 }

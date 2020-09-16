@@ -5,6 +5,7 @@ services:
   ia_go_publisher:
     depends_on:
       - ia_eisbase
+      - ia_common
     build:
       context: $PWD/../GoPublisher
       dockerfile: $PWD/../GoPublisher/Dockerfile
@@ -23,20 +24,7 @@ services:
       no_proxy: ${eis_no_proxy},${ETCD_HOST}
       ETCD_HOST: ${ETCD_HOST}
       ETCD_PREFIX: ${ETCD_PREFIX}
-      # MessageBus Endpoint Configuration
-      Clients : "GoSubscriber"
       CertType: "zmq"
-
-      # Use IPC mode (zmq_ipc) when VideoIngestion and VideoAnalytics based
-      # containers are running on the same host. If they are running on diff
-      # host, please use TCP mode for communication.
-      # Eg: Stream cfg for
-      # IPC: zmq_ipc, <absolute_socket_directory_path>
-      # TPC: zmq_tcp, <publisher_host>:<publisher_port>
-      PubTopics: "publish_test"
-      publish_test_cfg: "zmq_tcp,127.0.0.1:60011"
-      Server: "zmq_tcp,127.0.0.1:60012"
-      # publish_test_cfg: "zmq_ipc,${SOCKET_DIR}/"
     volumes:
       - "vol_eis_socket:${SOCKET_DIR}"
     secrets:

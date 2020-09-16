@@ -23,26 +23,40 @@ SOFTWARE.
 package main
 
 import (
+	eiscfgmgr "ConfigMgr/eisconfigmgr"
 	eismsgbus "EISMessageBus/eismsgbus"
-	util "IEdgeInsights/common/util"
-	envconfig "EnvConfig"
 	"github.com/golang/glog"
 	"flag"
 	"fmt"
-	"os"
-	"strconv"
 	"time"
-	"encoding/json"
-	configmgr "ConfigManager"
+
 )
 
-func start_publisher(topic string) {
-
-	mode := os.Getenv("DEV_MODE")
-	devMode, err := strconv.ParseBool(mode)
+func start_publisher() {
 	flag.Parse()
 
-	config, err := readPubConfig(topic, devMode)
+	configmgr, err := eiscfgmgr.NewConfigMgr()
+
+	if(err != nil) {
+		glog.Fatal("Config Manager initialization failed...")
+	}
+	
+	// pubctx,_ := config_mgr.GetPublisherByName("sample_pub")
+	pubctx, _ := configmgr.GetPublisherByIndex(0)
+
+	endpoint := pubctx.GetEndPoints()
+	fmt.Println("Publisher's endpoint:", endpoint)
+
+	topics := pubctx.GetTopics()
+	fmt.Println("Publisher Topics")
+
+	config, err := pubctx.GetMsgbusConfig()
+
+	if(err != nil) {
+		fmt.Printf("Error occured with error:%v", err)
+		return
+	}
+
 	fmt.Printf("-- Initializing message bus context %v\n", config)
 	client, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
@@ -51,8 +65,8 @@ func start_publisher(topic string) {
 	}
 	defer client.Close()
 
-	fmt.Printf("-- Creating publisher for topic %s\n", topic)
-	publisher, err := client.NewPublisher(topic)
+	fmt.Printf("-- Creating publisher for topic %s\n", topics[0])
+	publisher, err := client.NewPublisher(topics[0])
 	if err != nil {
 		fmt.Printf("-- Error creating publisher: %v\n", err)
 		return
@@ -65,55 +79,28 @@ func start_publisher(topic string) {
                 "str":   "hello",
                 "count":   0,
         }
-
         count := 0
 
-        data, err := get_app_config()
-        loop_interval, _ := time.ParseDuration(data["loop_interval"])
+		data, err := configmgr.GetAppConfig()
+		if err != nil {
+			fmt.Println("Error found to get app config:", err)
+		}
+
+		strdata := fmt.Sprintf("%v", data["loop_interval"])
+        loop_interval, _ := time.ParseDuration(strdata+"s")
 
 	for {
-                sMsg["count"] = count
+		sMsg["count"] = count
 
 		err = publisher.Publish(sMsg)
 
 		if err != nil {
 			fmt.Printf("-- Failed to publish message: %v \n", err)
 		}else{
-		        fmt.Printf("-- Published message : %v \n", sMsg)
-                }
+			fmt.Printf("-- Published message : %v \n", sMsg)
+		}
 
-                count++
+		count++
 		time.Sleep(loop_interval)
 	}
 }
-
-func readPubConfig(topicName string, devMode bool) (map[string]interface{}, error) {
-	appName := os.Getenv("AppName")
-	cfgMgrConfig := util.GetCryptoMap(appName)
-	return envconfig.GetMessageBusConfig(topicName, "pub", devMode, cfgMgrConfig), nil
-}
-
-func get_app_config()(map[string]string, error){
-        data := make(map[string]string)
-	appName := os.Getenv("AppName")
-	config := util.GetCryptoMap(appName)
-        mgr := configmgr.Init("etcd", config)
-	if mgr == nil {
-		glog.Fatal("Config Manager initialization failed...")
-	}
-
-        value, err := mgr.GetConfig("/" + appName + "/config")
-        if err != nil {
-                fmt.Printf("Not able to read value from etcd for /%v/config", appName)
-                return nil, err
-        }
-
-        err = json.Unmarshal([]byte(value), &data)
-        if err != nil {
-                fmt.Printf("json error: %s", err.Error())
-                return nil, err
-        }
-        return data,nil
-}
-
-

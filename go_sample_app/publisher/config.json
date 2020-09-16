@@ -1,3 +1,32 @@
 {
-    "loop_interval": "1"
+    "/GoPublisher/config" : {
+        "loop_interval": 1
+    },
+
+    "/GoPublisher/interfaces" : {
+        "Publishers": [
+            {
+                "Name": "sample_pub",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:60081",
+                "Topics": [
+                    "publish_test"
+                ],
+                "AllowedClients": [
+                    "GoSubscriber"
+                ]
+            }
+        ],
+
+        "Servers": [
+            {
+                "Name": "echo_service",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:60071",
+                "AllowedClients": [
+                    "GoSubscriber"
+                ]
+            }
+        ]
+    }
 }
