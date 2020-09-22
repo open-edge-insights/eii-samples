@@ -43,6 +43,8 @@ def start_server():
         msgbus = mb.MsgbusContext(msgbus_cfg)
 
         print(f'[INFO] Initializing service for PythonServer')
+
+        # TODO: dynamically get this value using get_app_interface()
         service = msgbus.new_service("echo_service")
 
         print('[INFO] Running...')

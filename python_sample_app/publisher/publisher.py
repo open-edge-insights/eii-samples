@@ -31,7 +31,7 @@ import cfgmgr.config_manager as cfg
 from util.util import Util
 
 
-def start_publisher(topic_string):
+def start_publisher():
     publisher = None
 
     try:

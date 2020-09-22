@@ -1,3 +1,35 @@
 {
-    "loop_interval": "1"
+    "/PythonSubscriber/config":{
+        "loop_interval": "1"
+    },
+    "/PythonSubscriber/interfaces":{
+        "Clients": [
+            {
+                "Name": "echo_service",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:9000",
+                "ServerAppName": "PythonPublisher"
+            }
+        ],
+        "Subscribers": [
+            {
+                "Name": "Cam1_Results",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:65014",
+                "PublisherAppName": "PythonPublisher",
+                "Topics": [
+                    "*"
+                ]
+            },
+            {
+                "Name": "Cam2_Results",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:65020",
+                "PublisherAppName": "PythonPublisher",
+                "Topics": [
+                    "camera1_stream_results"
+                ]
+            }
+        ]
+    }
 }

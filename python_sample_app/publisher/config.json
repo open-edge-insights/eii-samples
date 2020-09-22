@@ -1,3 +1,31 @@
 {
-    "loop_interval": "1"
+    "/PythonPublisher/config":{
+        "loop_interval": "1"
+    },
+    "/PythonPublisher/interfaces":{
+        "Publishers": [
+            {
+                "Name": "Image_Metadata",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:65020",
+                "AllowedClients": [
+                    "PythonSubscriber"
+                ],
+                "Topics": [
+                    "camera1_stream_results",
+                    "camera2_stream_results_metaonly"
+                ]
+            }
+        ],
+        "Servers": [
+            {
+                "Name": "echo_service",
+                "Type": "zmq_tcp",
+                "EndPoint": "127.0.0.1:9000",
+                "AllowedClients": [
+                    "PythonSubscriber"
+                ]
+            }
+        ]
+    }
 }

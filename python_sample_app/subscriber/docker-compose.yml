@@ -31,17 +31,6 @@ services:
       CertType: "zmq"
       # ZMQ_RECV_HWM: "1000"
 
-      # Use IPC mode (zmq_ipc) when VideoIngestion and VideoAnalytics based
-      # containers are running on the same host. If they are running on diff
-      # host, please use TCP mode for communication.
-      # Eg: Stream cfg for
-      # IPC: zmq_ipc, <absolute_socket_directory_path>
-      # TPC: zmq_tcp, <publisher_host>:<publisher_port>
-      SubTopics: "PythonPublisher/publish_test"
-      publish_test_cfg: "zmq_tcp,127.0.0.1:60014"
-      #publish_test_cfg: "zmq_ipc,${SOCKET_DIR}/"
-      RequestEP: "PythonPublisher"
-      PythonPublisher_cfg: "zmq_tcp,127.0.0.1:60013"
     volumes:
       - "vol_eis_socket:${SOCKET_DIR}"
     secrets:

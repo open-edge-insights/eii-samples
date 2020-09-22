@@ -39,12 +39,13 @@ def start_client():
         print('[INFO] Initializing message bus context')
 
         ctx = cfg.ConfigMgr()
-        client_ctx = ctx.get_client_by_name("Visualizer")
+        client_ctx = ctx.get_client_by_name("echo_service")
         msgbus_cfg = client_ctx.get_msgbus_config()
 
         msgbus = mb.MsgbusContext(msgbus_cfg)
         print(f'[INFO] Initializing service for {"echo_service"}')
 
+        # TODO: dynamically get this value using get_app_interface()
         service = msgbus.get_service("echo_service")
         # Request used for the example
         request = {'int': 42, 'float': 55.5,
