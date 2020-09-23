@@ -1,8 +1,8 @@
 {
-    "/PythonPublisher/config":{
+    "config":{
         "loop_interval": "1"
     },
-    "/PythonPublisher/interfaces":{
+    "interfaces":{
         "Publishers": [
             {
                 "Name": "Image_Metadata",

@@ -1,9 +1,9 @@
 {
-    "/GoPublisher/config" : {
+    "config" : {
         "loop_interval": 1
     },
 
-    "/GoPublisher/interfaces" : {
+    "interfaces" : {
         "Publishers": [
             {
                 "Name": "sample_pub",

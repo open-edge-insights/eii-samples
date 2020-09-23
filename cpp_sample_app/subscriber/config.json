@@ -1,9 +1,9 @@
 {
-    "/CppSubscriber/config" : {
+    "config" : {
         "loop_interval": 1
     },
 
-    "/CppSubscriber/interfaces" : {
+    "interfaces" : {
    
         "Subscribers": [
             {

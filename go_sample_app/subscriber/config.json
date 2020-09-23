@@ -1,9 +1,9 @@
 {
-    "/GoSubscriber/config" : {
+    "config" : {
         "loop_interval": 1
     },
 
-    "/GoSubscriber/interfaces" : {
+    "interfaces" : {
    
         "Subscribers": [
             {

@@ -1,9 +1,9 @@
 {
-    "/CppPublisher/config" : {
+    "config" : {
         "loop_interval": 1
     },
 
-    "/CppPublisher/interfaces" : {
+    "interfaces" : {
         "Publishers": [
             {
                 "Name": "sample_pub",
