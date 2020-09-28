@@ -33,7 +33,7 @@ func start_server() {
 	
 	serviceName := "echo_service"
 
-	configmgr, err := eiscfgmgr.NewConfigMgr()
+	configmgr, err := eiscfgmgr.ConfigManager()
 
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")

@@ -31,7 +31,7 @@ import (
 
 func start_subscriber() {
 
-	configmgr, _ := eiscfgmgr.NewConfigMgr()
+	configmgr, _ := eiscfgmgr.ConfigManager()
 
 	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
 	subctx, _ := configmgr.GetSubscriberByIndex(0)

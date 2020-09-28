@@ -35,7 +35,7 @@ import (
 func start_publisher() {
 	flag.Parse()
 
-	configmgr, err := eiscfgmgr.NewConfigMgr()
+	configmgr, err := eiscfgmgr.ConfigManager()
 
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
