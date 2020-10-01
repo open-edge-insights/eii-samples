@@ -39,8 +39,8 @@ func start_server() {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 
-	// serverctx, err := configmgr.GetSeverByName("echo_service")
-	serverctx,_ := configmgr.GetSeverByIndex(0)
+	// serverctx, err := configmgr.GetServerByName("echo_service")
+	serverctx,_ := configmgr.GetServerByIndex(0)
 	if(err != nil) {
 		glog.Fatal("GetServerByIndex is failed")
 	}
