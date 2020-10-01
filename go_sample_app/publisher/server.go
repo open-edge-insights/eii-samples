@@ -30,8 +30,6 @@ import (
 )
 
 func start_server() {
-	
-	serviceName := "echo_service"
 
 	configmgr, err := eiscfgmgr.ConfigManager()
 
@@ -45,6 +43,17 @@ func start_server() {
 		glog.Fatal("GetServerByIndex is failed")
 	}
 	
+	interfaceVal, err := serverctx.GetInterfaceValue("Name")
+	if(err != nil){
+		fmt.Printf("Error to GetInterfaceValue of 'Name': %v\n", err)
+		return
+	}
+
+	serviceName, err := interfaceVal.GetString()
+	if(err != nil) {
+		fmt.Printf("Error to GetString value of 'Name'%v\n", err)
+		return
+	}
 
 	config, err := serverctx.GetMsgbusConfig()
 	if(err != nil) {
