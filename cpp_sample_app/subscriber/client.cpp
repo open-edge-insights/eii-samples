@@ -63,7 +63,7 @@ bool Client::init() {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_service_get(g_msgbus_ctx_client, "echo_service", NULL,
+    ret = msgbus_service_get(g_msgbus_ctx_client, "sample_client", NULL,
                              &g_service_ctx);
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);
