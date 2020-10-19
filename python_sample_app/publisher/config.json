@@ -21,7 +21,7 @@
             {
                 "Name": "echo_service",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:9000",
+                "EndPoint": "127.0.0.1:65117",
                 "AllowedClients": [
                     "PythonSubscriber"
                 ]
