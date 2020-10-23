@@ -22,9 +22,7 @@
 
 import eis.msgbus as mb
 import os
-from eis.config_manager import ConfigManager
 from distutils.util import strtobool
-from eis.env_config import EnvConfig
 import cfgmgr.config_manager as cfg
 from util.util import Util
 

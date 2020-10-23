@@ -25,8 +25,6 @@ import eis.msgbus as mb
 import os
 import json
 from distutils.util import strtobool
-from eis.env_config import EnvConfig
-from eis.config_manager import ConfigManager
 import cfgmgr.config_manager as cfg
 from util.util import Util
 
