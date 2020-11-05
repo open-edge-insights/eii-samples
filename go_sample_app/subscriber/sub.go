@@ -25,25 +25,43 @@ package main
 import (
 	eismsgbus "EISMessageBus/eismsgbus"
 	eiscfgmgr "ConfigMgr/eisconfigmgr"
+	"github.com/golang/glog"
 	"fmt"
 	"time"
 )
 
 func start_subscriber() {
 
-	configmgr, _ := eiscfgmgr.ConfigManager()
+	configmgr, err := eiscfgmgr.ConfigManager()
+	if(err != nil) {
+		glog.Fatal("Config Manager initialization failed...")
+	}
 
 	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
-	subctx, _ := configmgr.GetSubscriberByIndex(0)
+	subctx, err := configmgr.GetSubscriberByIndex(0)
+	if err != nil {
+		glog.Errorf("Error: %v to GetPublisherByIndex", err)
+		return
+	}
+
 	config, err := subctx.GetMsgbusConfig()
 	if(err != nil) {
 		fmt.Printf("-- Error get message bus config: %v\n", err)
 		return
 	}
-	
-	topics := subctx.GetTopics()
 
-	endpoint := subctx.GetEndPoints()
+	topics, err := subctx.GetTopics()
+	if err != nil {
+		glog.Errorf("Error: %v to GetTopics", err)
+		return
+	}
+
+	endpoint, err := subctx.GetEndPoints()
+	if err != nil {
+		glog.Errorf("Error: %v to GetEndPoints", err)
+		return
+	}
+
 	fmt.Printf("Subscriber endpoint:%s", endpoint)
 
 	fmt.Printf("-- Initializing message bus context for sub %v\n", config)

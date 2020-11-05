@@ -32,13 +32,12 @@ import (
 func start_server() {
 
 	configmgr, err := eiscfgmgr.ConfigManager()
-
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 
 	// serverctx, err := configmgr.GetServerByName("echo_service")
-	serverctx,_ := configmgr.GetServerByIndex(0)
+	serverctx, err := configmgr.GetServerByIndex(0)
 	if(err != nil) {
 		glog.Fatal("GetServerByIndex is failed")
 	}

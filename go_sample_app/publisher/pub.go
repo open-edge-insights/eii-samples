@@ -36,22 +36,34 @@ func start_publisher() {
 	flag.Parse()
 
 	configmgr, err := eiscfgmgr.ConfigManager()
-
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 	
 	// pubctx,_ := config_mgr.GetPublisherByName("sample_pub")
-	pubctx, _ := configmgr.GetPublisherByIndex(0)
+	pubctx, err := configmgr.GetPublisherByIndex(0)
+	if err != nil {
+		glog.Errorf("Error: %v to GetPublisherByIndex", err)
+		return
+	}
 
-	endpoint := pubctx.GetEndPoints()
+	endpoint, err := pubctx.GetEndPoints()
+	if err != nil {
+		glog.Errorf("Error: %v to GetEndPoints", err)
+		return
+	}
+
 	fmt.Println("Publisher's endpoint:", endpoint)
 
-	topics := pubctx.GetTopics()
+	topics, err := pubctx.GetTopics()
+	if err != nil {
+		glog.Errorf("Error: %v to GetTopics", err)
+		return
+	}
+
 	fmt.Println("Publisher Topics")
 
 	config, err := pubctx.GetMsgbusConfig()
-
 	if(err != nil) {
 		fmt.Printf("Error occured with error:%v", err)
 		return
