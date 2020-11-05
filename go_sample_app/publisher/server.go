@@ -35,13 +35,15 @@ func start_server() {
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
+	defer configmgr.Destroy()
 
 	// serverctx, err := configmgr.GetServerByName("echo_service")
 	serverctx, err := configmgr.GetServerByIndex(0)
 	if(err != nil) {
 		glog.Fatal("GetServerByIndex is failed")
 	}
-	
+	defer serverctx.Destroy()
+
 	interfaceVal, err := serverctx.GetInterfaceValue("Name")
 	if(err != nil){
 		fmt.Printf("Error to GetInterfaceValue of 'Name': %v\n", err)

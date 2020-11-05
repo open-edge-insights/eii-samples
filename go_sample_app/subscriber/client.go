@@ -33,16 +33,17 @@ import (
 
 func start_client() {
 	configmgr, err := eiscfgmgr.ConfigManager()
-
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
+	defer configmgr.Destroy()
 
 	// clientctx, err := configmgr.GetClientByName("echo_client")
 	clientctx, err := configmgr.GetClientByIndex(0)
 	if err != nil {
 		glog.Fatalf("-- Error to get client object: %v\n", err)
 	}
+	defer clientctx.Destroy()
 
 	interfaceVal, err := clientctx.GetInterfaceValue("Name")
 	if(err != nil){

@@ -36,6 +36,7 @@ func start_subscriber() {
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
+	defer configmgr.Destroy()
 
 	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
 	subctx, err := configmgr.GetSubscriberByIndex(0)
@@ -43,7 +44,8 @@ func start_subscriber() {
 		glog.Errorf("Error: %v to GetPublisherByIndex", err)
 		return
 	}
-
+	defer subctx.Destroy()
+	
 	config, err := subctx.GetMsgbusConfig()
 	if(err != nil) {
 		fmt.Printf("-- Error get message bus config: %v\n", err)

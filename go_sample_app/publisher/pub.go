@@ -39,13 +39,15 @@ func start_publisher() {
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
-	
+	defer configmgr.Destroy()
+
 	// pubctx,_ := config_mgr.GetPublisherByName("sample_pub")
 	pubctx, err := configmgr.GetPublisherByIndex(0)
 	if err != nil {
 		glog.Errorf("Error: %v to GetPublisherByIndex", err)
 		return
 	}
+	defer pubctx.Destroy()
 
 	endpoint, err := pubctx.GetEndPoints()
 	if err != nil {
