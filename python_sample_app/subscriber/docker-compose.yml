@@ -21,6 +21,12 @@ services:
     network_mode: host
     restart: unless-stopped
     user: ${EIS_UID}
+    read_only: true
+    security_opt:
+    - no-new-privileges
+    healthcheck:
+      test: ["CMD-SHELL", "exit", "0"]
+      interval: 5m
     environment:
       AppName: "PythonSubscriber"
       DEV_MODE: ${DEV_MODE}

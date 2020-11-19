@@ -44,4 +44,6 @@ COPY --from=common /usr/local/lib/python3.6/dist-packages/ /usr/local/lib/python
 
 COPY ./*.py ./
 
+HEALTHCHECK NONE
+
 ENTRYPOINT ["python3.6", "-u", "main.py"]

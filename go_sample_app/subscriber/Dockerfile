@@ -41,4 +41,6 @@ COPY ./*.go ./
 
 RUN go build -o ${GO_WORK_DIR}/main ${GO_WORK_DIR}/*.go
 
+HEALTHCHECK NONE
+
 ENTRYPOINT ["/EIS/go/src/IEdgeInsights/main"]

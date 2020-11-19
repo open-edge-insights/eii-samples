@@ -36,4 +36,6 @@ COPY ./include ./include
 
 RUN g++ -o ./main ./*.cpp -I./include -leismsgbus -leisutils -leismsgenv -lneweisconfigmgr -lpthread 
 
+HEALTHCHECK NONE
+
 ENTRYPOINT ["/EIS/go/src/IEdgeInsights/main"]
