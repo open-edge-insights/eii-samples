@@ -34,7 +34,7 @@ ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/lib
 COPY ./*.cpp ./
 COPY ./include ./include
 
-RUN g++ -o ./main ./*.cpp -I./include -leismsgbus -lsafestring -leisutils -leismsgenv -lneweisconfigmgr -lpthread
+RUN g++ -o ./main ./*.cpp -I./include -leismsgbus -lsafestring -leisutils -leismsgenv -leisconfigmanager -lpthread
 
 HEALTHCHECK NONE
 
