@@ -23,17 +23,18 @@ SOFTWARE.
 package main
 
 import (
-	eismsgbus "EISMessageBus/eismsgbus"
 	eiscfgmgr "ConfigMgr/eisconfigmgr"
-	"github.com/golang/glog"
+	eismsgbus "EISMessageBus/eismsgbus"
 	"fmt"
 	"time"
+
+	"github.com/golang/glog"
 )
 
 func start_subscriber() {
 
 	configmgr, err := eiscfgmgr.ConfigManager()
-	if(err != nil) {
+	if err != nil {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 	defer configmgr.Destroy()
@@ -45,9 +46,9 @@ func start_subscriber() {
 		return
 	}
 	defer subctx.Destroy()
-	
+
 	config, err := subctx.GetMsgbusConfig()
-	if(err != nil) {
+	if err != nil {
 		fmt.Printf("-- Error get message bus config: %v\n", err)
 		return
 	}
@@ -65,8 +66,6 @@ func start_subscriber() {
 	}
 
 	fmt.Printf("Subscriber endpoint:%s", endpoint)
-
-	fmt.Printf("-- Initializing message bus context for sub %v\n", config)
 
 	client, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {

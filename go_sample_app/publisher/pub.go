@@ -25,18 +25,18 @@ package main
 import (
 	eiscfgmgr "ConfigMgr/eisconfigmgr"
 	eismsgbus "EISMessageBus/eismsgbus"
-	"github.com/golang/glog"
 	"flag"
 	"fmt"
 	"time"
 
+	"github.com/golang/glog"
 )
 
 func start_publisher() {
 	flag.Parse()
 
 	configmgr, err := eiscfgmgr.ConfigManager()
-	if(err != nil) {
+	if err != nil {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 	defer configmgr.Destroy()
@@ -66,12 +66,11 @@ func start_publisher() {
 	fmt.Println("Publisher Topics")
 
 	config, err := pubctx.GetMsgbusConfig()
-	if(err != nil) {
+	if err != nil {
 		fmt.Printf("Error occured with error:%v", err)
 		return
 	}
 
-	fmt.Printf("-- Initializing message bus context %v\n", config)
 	client, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
@@ -89,19 +88,19 @@ func start_publisher() {
 
 	fmt.Println("-- Running publisher...")
 
-        sMsg := map[string]interface{}{
-                "str":   "hello",
-                "count":   0,
-        }
-        count := 0
+	sMsg := map[string]interface{}{
+		"str":   "hello",
+		"count": 0,
+	}
+	count := 0
 
-		data, err := configmgr.GetAppConfig()
-		if err != nil {
-			fmt.Println("Error found to get app config:", err)
-		}
+	data, err := configmgr.GetAppConfig()
+	if err != nil {
+		fmt.Println("Error found to get app config:", err)
+	}
 
-		strdata := fmt.Sprintf("%v", data["loop_interval"])
-        loop_interval, _ := time.ParseDuration(strdata+"s")
+	strdata := fmt.Sprintf("%v", data["loop_interval"])
+	loop_interval, _ := time.ParseDuration(strdata + "s")
 
 	for {
 		sMsg["count"] = count
@@ -110,7 +109,7 @@ func start_publisher() {
 
 		if err != nil {
 			fmt.Printf("-- Failed to publish message: %v \n", err)
-		}else{
+		} else {
 			fmt.Printf("-- Published message : %v \n", sMsg)
 		}
 

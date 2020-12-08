@@ -13,16 +13,7 @@
         ],
         "Subscribers": [
             {
-                "Name": "Cam1_Results",
-                "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:65014",
-                "PublisherAppName": "PythonPublisher",
-                "Topics": [
-                    "*"
-                ]
-            },
-            {
-                "Name": "Cam2_Results",
+                "Name": "default",
                 "Type": "zmq_tcp",
                 "EndPoint": "127.0.0.1:65020",
                 "PublisherAppName": "PythonPublisher",

@@ -23,17 +23,18 @@ SOFTWARE.
 package main
 
 import (
-	eismsgbus "EISMessageBus/eismsgbus"
 	eiscfgmgr "ConfigMgr/eisconfigmgr"
-	"github.com/golang/glog"
+	eismsgbus "EISMessageBus/eismsgbus"
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/golang/glog"
 )
 
 func start_client() {
 	configmgr, err := eiscfgmgr.ConfigManager()
-	if(err != nil) {
+	if err != nil {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 	defer configmgr.Destroy()
@@ -46,13 +47,13 @@ func start_client() {
 	defer clientctx.Destroy()
 
 	interfaceVal, err := clientctx.GetInterfaceValue("Name")
-	if(err != nil){
+	if err != nil {
 		fmt.Printf("Error to GetInterfaceValue of 'Name': %v\n", err)
 		return
 	}
 
 	serviceName, err := interfaceVal.GetString()
-	if(err != nil) {
+	if err != nil {
 		fmt.Printf("Error to GetString value of 'Name'%v\n", err)
 		return
 	}
@@ -62,8 +63,6 @@ func start_client() {
 	if err != nil {
 		glog.Fatalf("-- Error to get message bus config: %v\n", err)
 	}
-
-	fmt.Printf("-- Initializing message bus context for client %v", config)
 
 	client1, err := eismsgbus.NewMsgbusClient(config)
 	if err != nil {
@@ -90,7 +89,7 @@ func start_client() {
 	}
 
 	strdata := fmt.Sprintf("%v", data["loop_interval"])
-	loop_interval, _ := time.ParseDuration(strdata+"s")
+	loop_interval, _ := time.ParseDuration(strdata + "s")
 
 	for {
 		var cmd interface{} = req["command"].(string) + strconv.Itoa(count)
@@ -119,4 +118,3 @@ func start_client() {
 		time.Sleep(loop_interval)
 	}
 }
-

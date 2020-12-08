@@ -36,7 +36,7 @@ def start_server():
         print('[INFO] Initializing message bus context')
 
         ctx = cfg.ConfigMgr()
-        server_ctx = ctx.get_server_by_name("echo_service")
+        server_ctx = ctx.get_server_by_index(0)
         msgbus_cfg = server_ctx.get_msgbus_config()
         msgbus = mb.MsgbusContext(msgbus_cfg)
 

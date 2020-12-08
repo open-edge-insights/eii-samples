@@ -31,9 +31,8 @@ def start_subscriber():
     subscriber = None
 
     try:
-        
         ctx = cfg.ConfigMgr()
-        sub_ctx = ctx.get_subscriber_by_name("Cam2_Results")
+        sub_ctx = ctx.get_subscriber_by_index(0)
         msgbus_cfg = sub_ctx.get_msgbus_config()
 
         print('[INFO] Initializing message bus context')

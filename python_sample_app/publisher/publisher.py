@@ -34,7 +34,7 @@ def start_publisher():
 
     try:
         ctx = cfg.ConfigMgr()
-        pub_ctx = ctx.get_publisher_by_name("Image_Metadata")
+        pub_ctx = ctx.get_publisher_by_index(0)
         msgbus_cfg = pub_ctx.get_msgbus_config()
 
         print('[INFO] Initializing message bus context')
