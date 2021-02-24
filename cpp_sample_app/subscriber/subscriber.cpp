@@ -27,7 +27,7 @@
 extern "C" {
     #include <safe_str_lib.h>
 }
-#include "eis/msgbus/msgbus.h"
+#include "eii/msgbus/msgbus.h"
 #include "subscriber.h"
 
 #define SIZE 100

@@ -1,6 +1,6 @@
-# Sample Applications for EIS Platform #
+# Sample Applications for EII Platform #
 
-There are three sample apps for EIS Platform:
+There are three sample apps for EII Platform:
 1. ### cpp_sample_app ###
     Description: [README.md](cpp_sample_app/README.md)
 2. ### go_sample_app ###
@@ -10,7 +10,7 @@ There are three sample apps for EIS Platform:
 
 **1. Creating Symbolic Links for the Apps:**
 
-Symbolic links need to be created for publisher and subscriber directories of each app in order to comply with the rest of the EIS apps
+Symbolic links need to be created for publisher and subscriber directories of each app in order to comply with the rest of the EII apps
 where each directory has it's own Dockerfile, docker-compose.yml file and config.json.
 This can be done by following commands:
 
@@ -27,12 +27,12 @@ ln -s Samples/python_sample_app/publisher PythonPublisher
 ln -s Samples/python_sample_app/subscriber PythonSubscriber
 ```
 
-**2. Running [eis_builder.py](../build/eis_builder.py) to generate consolidated docker-compose.yml and eis_config.json.**
+**2. Running [eii_builder.py](../build/eii_builder.py) to generate consolidated docker-compose.yml and eii_config.json.**
 
 ```sh
  cd [repo]/build
 
- python3 eis_builder.py
+ python3 eii_builder.py
 ```
 
 **3. Refer [provision/README.md](../README.md) to provision, build and run the Sample Apps.**

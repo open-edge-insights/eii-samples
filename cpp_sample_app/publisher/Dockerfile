@@ -19,14 +19,14 @@
 # SOFTWARE.
 
 # Dockerfile for cpp_publisher
-ARG EIS_VERSION
+ARG EII_VERSION
 ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}ia_eisbase:$EIS_VERSION as eisbase
+FROM ${DOCKER_REGISTRY}ia_eiibase:$EII_VERSION as eiibase
 LABEL description="cpp_publisher image"
 
 WORKDIR ${PY_WORK_DIR}
 
-FROM ${DOCKER_REGISTRY}ia_common:$EIS_VERSION as common
+FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
 
 ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/lib
 
@@ -34,8 +34,8 @@ ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/lib
 COPY ./*.cpp ./
 COPY ./include ./include
 
-RUN g++ -o ./main ./*.cpp -I./include -leismsgbus -leisutils -leismsgenv -leisconfigmanager -lpthread 
+RUN g++ -o ./main ./*.cpp -I./include -leiimsgbus -leiiutils -leiimsgenv -leiiconfigmanager -lpthread 
 
 HEALTHCHECK NONE
 
-ENTRYPOINT ["/EIS/go/src/IEdgeInsights/main"]
+ENTRYPOINT ["/EII/go/src/IEdgeInsights/main"]

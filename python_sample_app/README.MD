@@ -1,7 +1,7 @@
-# Sample Python APP for EIS platform #
+# Sample Python APP for EII platform #
 
 # Short Description of App containers
-This is a sample Python application which demonstrates the usage of EIS core libraries like EISMessageBus and ConfigManager.
+This is a sample Python application which demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
 
 In this app, there is a publisher, a subscriber a client and a
 server. Subscriber-client and publisher-server are running inside independent

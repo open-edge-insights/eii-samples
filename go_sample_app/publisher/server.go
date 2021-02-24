@@ -23,15 +23,15 @@ SOFTWARE.
 package main
 
 import (
-	eiscfgmgr "ConfigMgr/eisconfigmgr"
-	eismsgbus "EISMessageBus/eismsgbus"
+	eiicfgmgr "ConfigMgr/eiiconfigmgr"
+	eiimsgbus "EIIMessageBus/eiimsgbus"
 	"github.com/golang/glog"
 	"fmt"
 )
 
 func start_server() {
 
-	configmgr, err := eiscfgmgr.ConfigManager()
+	configmgr, err := eiicfgmgr.ConfigManager()
 	if(err != nil) {
 		glog.Fatal("Config Manager initialization failed...")
 	}
@@ -61,7 +61,7 @@ func start_server() {
 		glog.Fatal("Error occured with error:%v", err)
 	}
 
-	sClient, err := eismsgbus.NewMsgbusClient(config)
+	sClient, err := eiimsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
 		return

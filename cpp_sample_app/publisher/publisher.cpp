@@ -25,10 +25,10 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "eis/msgbus/msgbus.h"
+#include "eii/msgbus/msgbus.h"
 #include "publisher.h"
 
-#include "eis/utils/json_config.h"
+#include "eii/utils/json_config.h"
 
 #define MAX_CONFIG_KEY_LENGTH 40
 

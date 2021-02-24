@@ -20,9 +20,9 @@
 
 
 # Dockerfile for Python_sample_publisher
-ARG EIS_VERSION
+ARG EII_VERSION
 ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}ia_eisbase:$EIS_VERSION as eisbase
+FROM ${DOCKER_REGISTRY}ia_eiibase:$EII_VERSION as eiibase
 
 WORKDIR ${PY_WORK_DIR}
 
@@ -33,9 +33,9 @@ RUN apt-get remove -y wget && \
     apt-get remove curl && \
     apt-get autoremove -y
 
-FROM ${DOCKER_REGISTRY}ia_common:$EIS_VERSION as common
+FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
 
-FROM eisbase
+FROM eiibase
 
 COPY --from=common ${GO_WORK_DIR}/common/util ${PY_WORK_DIR}/util
 COPY --from=common ${GO_WORK_DIR}/common/libs ${PY_WORK_DIR}/libs

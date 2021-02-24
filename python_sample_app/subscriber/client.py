@@ -17,11 +17,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-"""EIS Message Bus echo service client Python example.
+"""EII Message Bus echo service client Python example.
 """
 
 import time
-import eis.msgbus as mb
+import eii.msgbus as mb
 import os
 import json
 from distutils.util import strtobool
