@@ -1,7 +1,7 @@
-## Sample CPP APP for EIS platform ##
+## Sample CPP APP for EII platform ##
 
 # 'Short Description of App containers'
-   The sample CPP application demonstrates the usage of EIS core libraries like EISMessageBus and ConfigManager.
+   The sample CPP application demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
    In this APP, there is a publisher,subscriber,client and server, subscriber-client and publisher-server are running, inside independent
    containers (container names are ia_cpp_publisher, ia_cpp_subscriber).
 

@@ -27,11 +27,11 @@
 #include <string.h>
 #include <unistd.h>
 #include <server.h>
-#include "eis/msgbus/msgbus.h"
-#include "eis/utils/logger.h"
-#include "eis/utils/json_config.h"
+#include "eii/msgbus/msgbus.h"
+#include "eii/utils/logger.h"
+#include "eii/utils/json_config.h"
 
-using namespace eis::config_manager;
+using namespace eii::config_manager;
 
 Server::Server(std::atomic<bool> *loop) {
     server_ch = new ConfigMgr();

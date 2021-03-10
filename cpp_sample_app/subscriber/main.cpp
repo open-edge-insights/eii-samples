@@ -26,10 +26,10 @@
 #include <signal.h>
 #include <unistd.h>
 #include <pthread.h>
-#include "eis/msgbus/msgbus.h"
+#include "eii/msgbus/msgbus.h"
 #include "subscriber.h"
 #include "client.h"
-#include "eis/utils/logger.h"
+#include "eii/utils/logger.h"
 
 using namespace std;
 

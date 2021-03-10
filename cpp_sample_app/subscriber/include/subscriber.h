@@ -20,13 +20,13 @@
 #include <signal.h>
 #include <unistd.h>
 #include <atomic>
-#include "eis/msgbus/msgbus.h"
-#include "eis/config_manager/config_mgr.hpp"
+#include "eii/msgbus/msgbus.h"
+#include "eii/config_manager/config_mgr.hpp"
 
 #ifndef SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_SUBSCRIBER_H_
 #define SAMPLES_CPP_SAMPLE_APP_SUBSCRIBER_INCLUDE_SUBSCRIBER_H_
 
-using namespace eis::config_manager;
+using namespace eii::config_manager;
 
 
 class Subscriber {

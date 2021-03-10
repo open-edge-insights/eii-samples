@@ -23,8 +23,8 @@ SOFTWARE.
 package main
 
 import (
-	eiscfgmgr "ConfigMgr/eisconfigmgr"
-	eismsgbus "EISMessageBus/eismsgbus"
+	eiicfgmgr "ConfigMgr/eiiconfigmgr"
+	eiimsgbus "EIIMessageBus/eiimsgbus"
 	"fmt"
 	"strconv"
 	"time"
@@ -33,7 +33,7 @@ import (
 )
 
 func start_client() {
-	configmgr, err := eiscfgmgr.ConfigManager()
+	configmgr, err := eiicfgmgr.ConfigManager()
 	if err != nil {
 		glog.Fatal("Config Manager initialization failed...")
 	}
@@ -64,7 +64,7 @@ func start_client() {
 		glog.Fatalf("-- Error to get message bus config: %v\n", err)
 	}
 
-	client1, err := eismsgbus.NewMsgbusClient(config)
+	client1, err := eiimsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
 		return
