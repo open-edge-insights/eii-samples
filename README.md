@@ -27,12 +27,12 @@ ln -s Samples/python_sample_app/publisher PythonPublisher
 ln -s Samples/python_sample_app/subscriber PythonSubscriber
 ```
 
-**2. Running [eii_builder.py](../build/eii_builder.py) to generate consolidated docker-compose.yml and eii_config.json.**
+**2. Running [builder.py](../build/builder.py) to generate consolidated docker-compose.yml and eii_config.json.**
 
 ```sh
  cd [repo]/build
 
- python3 eii_builder.py
+ python3 builder.py
 ```
 
 **3. Refer [provision/README.md](../README.md) to provision, build and run the Sample Apps.**
