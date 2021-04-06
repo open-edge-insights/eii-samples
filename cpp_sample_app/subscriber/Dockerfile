@@ -21,21 +21,40 @@
 # Dockerfile for cpp_subscriber
 ARG EII_VERSION
 ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}ia_eiibase:$EII_VERSION as eiibase
+ARG UBUNTU_IMAGE_VERSION
+ARG ARTIFACTS="/artifacts"
+FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
+FROM ${DOCKER_REGISTRY}ia_eiibase:${EII_VERSION} as builder
 LABEL description="cpp_subscriber image"
 
-WORKDIR ${PY_WORK_DIR}
+WORKDIR /app
 
-FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
+ARG ARTIFACTS
+RUN mkdir $ARTIFACTS
 
-ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/usr/local/lib
+ARG CMAKE_INSTALL_PREFIX
+ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+COPY --from=common ${CMAKE_INSTALL_PREFIX}/include ${CMAKE_INSTALL_PREFIX}/include
+COPY --from=common ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib
+
+ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${CMAKE_INSTALL_PREFIX}/lib
 
 # Adding project depedency modules
 COPY ./*.cpp ./
 COPY ./include ./include
 
-RUN g++ -o ./main ./*.cpp -I./include -leiimsgbus -lsafestring -leiiutils -leiimsgenv -leiiconfigmanager -lpthread
+RUN g++ -o $ARTIFACTS/main ./*.cpp -I./include -I${CMAKE_INSTALL_PREFIX}/include -L${CMAKE_INSTALL_PREFIX}/lib -leiimsgbus -lsafestring -leiiutils -leiimsgenv -leiiconfigmanager -lpthread
+
+FROM ubuntu:$UBUNTU_IMAGE_VERSION as runtime
+ARG ARTIFACTS
+WORKDIR /app
+ARG CMAKE_INSTALL_PREFIX
+ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+COPY --from=builder ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib
+COPY --from=builder $ARTIFACTS .
+
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib
 
 HEALTHCHECK NONE
 
-ENTRYPOINT ["/EII/go/src/IEdgeInsights/main"]
+ENTRYPOINT ["./main"]
