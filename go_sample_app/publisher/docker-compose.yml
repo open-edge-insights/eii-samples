@@ -19,7 +19,6 @@ services:
     image: ${DOCKER_REGISTRY}ia_go_publisher:${EII_VERSION}
     container_name: ia_go_publisher
     hostname: ia_go_publisher
-    network_mode: host
     restart: unless-stopped
     read_only: true
     security_opt:
@@ -30,11 +29,16 @@ services:
     environment:
       AppName: "GoPublisher"
       DEV_MODE: ${DEV_MODE}
-      no_proxy: ${eii_no_proxy},${ETCD_HOST}
+      no_proxy: ${ETCD_HOST}
       ETCD_HOST: ${ETCD_HOST}
       ETCD_CLIENT_PORT: ${ETCD_CLIENT_PORT}
       ETCD_PREFIX: ${ETCD_PREFIX}
       CertType: "zmq"
+    ports:
+      - 60081:60081
+      - 60071:60071
+    networks:
+      - eii
     volumes:
       - "vol_eii_socket:${SOCKET_DIR}"
     secrets:

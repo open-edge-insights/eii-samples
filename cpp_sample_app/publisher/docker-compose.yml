@@ -21,7 +21,6 @@ services:
     image: ${DOCKER_REGISTRY}ia_cpp_publisher:${EII_VERSION}
     container_name: ia_cpp_publisher
     hostname: ia_cpp_publisher
-    network_mode: host
     restart: unless-stopped
     read_only: true
     security_opt:
@@ -32,11 +31,16 @@ services:
     environment:
       AppName: "CppPublisher"
       DEV_MODE: ${DEV_MODE}
-      no_proxy: ${eii_no_proxy},${ETCD_HOST}
+      no_proxy: ${ETCD_HOST}
       ETCD_HOST: ${ETCD_HOST}
       ETCD_CLIENT_PORT: ${ETCD_CLIENT_PORT}
       ETCD_PREFIX: ${ETCD_PREFIX}
       CertType: "zmq"
+    ports:
+      - 60088:60088
+      - 60078:60078
+    networks:
+      - eii
     volumes:
       - "vol_eii_socket:${SOCKET_DIR}"
     secrets:

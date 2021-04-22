@@ -20,7 +20,6 @@ services:
     image: ${DOCKER_REGISTRY}ia_python_subscriber:${EII_VERSION}
     container_name: ia_python_subscriber 
     hostname: ia_python_subscriber
-    network_mode: host
     restart: unless-stopped
     read_only: true
     security_opt:
@@ -31,13 +30,15 @@ services:
     environment:
       AppName: "PythonSubscriber"
       DEV_MODE: ${DEV_MODE}
-      no_proxy: ${eii_no_proxy},${ETCD_HOST}
+      no_proxy: ${ETCD_HOST}
       ETCD_HOST: ${ETCD_HOST}
       ETCD_CLIENT_PORT: ${ETCD_CLIENT_PORT}
       ETCD_PREFIX: ${ETCD_PREFIX}
       # MessageBus Endpoint Configuration
       CertType: "zmq"
       # ZMQ_RECV_HWM: "1000"
+    networks:
+      - eii
 
     volumes:
       - "vol_eii_socket:${SOCKET_DIR}"

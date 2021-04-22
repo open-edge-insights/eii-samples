@@ -8,7 +8,7 @@
             {
                 "Name": "sample_pub",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60088",
+                "EndPoint": "0.0.0.0:60088",
                 "Topics": [
                     "publish_test"
                 ],
@@ -22,7 +22,7 @@
             {
                 "Name": "echo_service",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60078",
+                "EndPoint": "0.0.0.0:60078",
                 "AllowedClients": [
                     "CppSubscriber"
                 ]

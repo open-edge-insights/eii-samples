@@ -7,7 +7,7 @@
             {
                 "Name": "echo_service",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:65117",
+                "EndPoint": "ia_python_publisher:65117",
                 "ServerAppName": "PythonPublisher"
             }
         ],
@@ -15,7 +15,7 @@
             {
                 "Name": "default",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:65020",
+                "EndPoint": "ia_python_publisher:65020",
                 "PublisherAppName": "PythonPublisher",
                 "Topics": [
                     "camera1_stream_results"
