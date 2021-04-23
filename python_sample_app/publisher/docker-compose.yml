@@ -22,7 +22,6 @@ services:
     hostname: ia_python_publisher
     network_mode: host
     restart: unless-stopped
-    user: ${EII_UID}
     read_only: true
     security_opt:
     - no-new-privileges

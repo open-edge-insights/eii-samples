@@ -54,7 +54,8 @@ WORKDIR /app
 
 ARG EII_UID
 ARG EII_USER_NAME
-RUN adduser --quiet --disabled-password ${EII_USER_NAME}
+RUN groupadd $EII_USER_NAME -g $EII_UID && \
+    useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
 
 ARG ARTIFACTS
 ARG CMAKE_INSTALL_PREFIX
@@ -64,6 +65,7 @@ COPY --from=common /eii/common/util/*.py util/
 COPY --from=common /root/.local/lib .local/lib
 COPY --from=builder $ARTIFACTS .
 RUN chown -R ${EII_UID} .local/lib/python3.6
+USER $EII_USER_NAME
 
 ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib
 ENV PATH $PATH:/app/.local/bin

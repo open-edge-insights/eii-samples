@@ -11,6 +11,8 @@ services:
       dockerfile: $PWD/../GoSubscriber/Dockerfile
       args:
         EII_VERSION: ${EII_VERSION}
+        EII_UID: ${EII_UID}
+        EII_USER_NAME: ${EII_USER_NAME}
         DOCKER_REGISTRY: ${DOCKER_REGISTRY}
         UBUNTU_IMAGE_VERSION: ${UBUNTU_IMAGE_VERSION}
         CMAKE_INSTALL_PREFIX: ${EII_INSTALL_PATH}
@@ -19,7 +21,6 @@ services:
     hostname: ia_go_subscriber
     network_mode: host
     restart: unless-stopped
-    user: ${EII_UID}
     read_only: true
     security_opt:
     - no-new-privileges
