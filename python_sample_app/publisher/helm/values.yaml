@@ -1,0 +1,5 @@
+config:
+    pythonpublisher:
+      name: pythonpublisher
+      publisher_port: 65020
+      server_port: 65117
