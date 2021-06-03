@@ -43,6 +43,10 @@ spec:
         securityContext:
           privileged: true
         volumeMounts:
+        {{- if eq .Values.config.pythonsubscriber.IPC true}}
+        - name: {{ .Values.volumes.eii_socket.name }}
+          mountPath: {{ .Values.volumes.eii_socket.location }}
+        {{- end }}
         {{ if eq .Values.env.dev_mode false}}
         - name: etcd-certs
           mountPath: /run/secrets/etcd/
@@ -60,6 +64,7 @@ spec:
         - name:  ETCD_PREFIX
           value: ''
         {{- if .Values.config.pythonpublisher }}
+        {{- if eq .Values.config.pythonsubscriber.IPC false}}
         - name: SUBSCRIBER_ENDPOINT
           value: "{{ .Values.config.pythonpublisher.name }}:{{ .Values.config.pythonpublisher.publisher_port }}"
         - name: SUBSCRIBER_TYPE
@@ -68,6 +73,16 @@ spec:
           value: "{{ .Values.config.pythonpublisher.name }}:{{ .Values.config.pythonpublisher.server_port }}"
         - name: CLIENT_echo_service_TYPE
           value: "zmq_tcp"
+        {{- else }}
+        - name: SUBSCRIBER_ENDPOINT
+          value: "{{ .Values.env.SOCKET_DIR }}"
+        - name: SUBSCRIBER_TYPE
+          value: "zmq_ipc"
+        - name: CLIENT_echo_service_ENDPOINT
+          value: "{{ .Values.env.SOCKET_DIR }}"
+        - name: CLIENT_echo_service_TYPE
+          value: "zmq_ipc"
+        {{- end }}
         {{- end }}
         {{ if eq .Values.env.dev_mode false}}
         - name: CONFIGMGR_CACERT
@@ -79,6 +94,11 @@ spec:
         {{ end }}
 
       volumes:
+      {{- if eq .Values.config.pythonsubscriber.IPC true}}
+      - name: {{ .Values.volumes.eii_socket.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.volumes.eii_socket.name }}
+      {{- end }}
       {{ if eq .Values.env.dev_mode false}}
       - name: etcd-certs
         secret:
