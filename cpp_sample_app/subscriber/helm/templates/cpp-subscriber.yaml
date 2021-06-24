@@ -36,6 +36,10 @@ spec:
       labels:
         app: cppsubscriber
     spec:
+      {{- if and .Values.DOCKER_USERNAME .Values.DOCKER_PASSWORD }}
+      imagePullSecrets:
+      - name: registryauth
+      {{- end }}
       containers:
       - name: ia-cpp-subscriber
         image: {{ .Values.DOCKER_REGISTRY }}ia_cpp_subscriber:{{ .Values.EII_VERSION }}

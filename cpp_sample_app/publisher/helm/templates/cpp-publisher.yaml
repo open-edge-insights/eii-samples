@@ -50,6 +50,10 @@ spec:
       labels:
         app: cpppublisher
     spec:
+      {{- if and .Values.DOCKER_USERNAME .Values.DOCKER_PASSWORD }}
+      imagePullSecrets:
+      - name: registryauth
+      {{- end }}
       containers:
       - name: ia-cpp-publisher
         image: {{ .Values.DOCKER_REGISTRY }}ia_cpp_publisher:{{ .Values.EII_VERSION }}
