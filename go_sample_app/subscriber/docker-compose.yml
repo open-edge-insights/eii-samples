@@ -7,8 +7,8 @@ services:
       - ia_eiibase
       - ia_common
     build:
-      context: $PWD/../GoSubscriber
-      dockerfile: $PWD/../GoSubscriber/Dockerfile
+      context: $PWD/../Samples/go_sample_app/subscriber
+      dockerfile: $PWD/../Samples/go_sample_app/subscriber/Dockerfile
       args:
         EII_VERSION: ${EII_VERSION}
         EII_UID: ${EII_UID}

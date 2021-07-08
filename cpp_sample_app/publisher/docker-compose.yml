@@ -7,8 +7,8 @@ services:
       - ia_eiibase
       - ia_common
     build:
-      context: $PWD/../CppPublisher
-      dockerfile: $PWD/../CppPublisher/Dockerfile
+      context: $PWD/../Samples/cpp_sample_app/publisher
+      dockerfile: $PWD/../Samples/cpp_sample_app/publisher/Dockerfile
       args:
         EII_VERSION: ${EII_VERSION}
         EII_UID: ${EII_UID}

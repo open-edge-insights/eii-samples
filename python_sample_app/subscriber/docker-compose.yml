@@ -6,8 +6,8 @@ services:
     depends_on:
       - ia_eiibase
     build:
-      context: $PWD/../PythonSubscriber
-      dockerfile: $PWD/../PythonSubscriber/Dockerfile
+      context: $PWD/../Samples/python_sample_app/subscriber
+      dockerfile: $PWD/../Samples/python_sample_app/subscriber/Dockerfile
       args:
         EII_VERSION: ${EII_VERSION}
         EII_UID: ${EII_UID}
