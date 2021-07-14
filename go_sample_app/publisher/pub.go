@@ -41,6 +41,12 @@ func start_publisher() {
 	}
 	defer configmgr.Destroy()
 
+	numOfPublishers, _ := configmgr.GetNumPublishers()
+	if numOfPublishers == -1 {
+		glog.Errorf("No publisher instances found, exiting...")
+		return
+	}
+
 	// pubctx,_ := config_mgr.GetPublisherByName("sample_pub")
 	pubctx, err := configmgr.GetPublisherByIndex(0)
 	if err != nil {

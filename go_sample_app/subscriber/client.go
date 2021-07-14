@@ -39,6 +39,12 @@ func start_client() {
 	}
 	defer configmgr.Destroy()
 
+	numOfClients, _ := configmgr.GetNumClients()
+	if numOfClients == -1 {
+		glog.Errorf("No client instances found, exiting...")
+		return
+	}
+
 	// clientctx, err := configmgr.GetClientByName("echo_client")
 	clientctx, err := configmgr.GetClientByIndex(0)
 	if err != nil {

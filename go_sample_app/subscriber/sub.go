@@ -39,6 +39,12 @@ func start_subscriber() {
 	}
 	defer configmgr.Destroy()
 
+	numOfSubscribers, _ := configmgr.GetNumSubscribers()
+	if numOfSubscribers == -1 {
+		glog.Errorf("No subscriber instances found, exiting...")
+		return
+	}
+
 	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
 	subctx, err := configmgr.GetSubscriberByIndex(0)
 	if err != nil {

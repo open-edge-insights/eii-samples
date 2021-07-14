@@ -49,6 +49,13 @@ Subscriber::~Subscriber() {
 }
 
 bool Subscriber::init() {
+
+    int num_of_subscribers = sub_ch->getNumSubscribers();
+    if (num_of_subscribers == -1) {
+        LOG_ERROR_0("No subscriber instances found, exiting...");
+        return false;
+    }
+
     // SubscriberCfg* sub_ctx = sub_ch->getSubscriberByName("sample_sub");
     SubscriberCfg* sub_ctx = sub_ch->getSubscriberByIndex(0);
     config_t* sub_config = sub_ctx->getMsgBusConfig();

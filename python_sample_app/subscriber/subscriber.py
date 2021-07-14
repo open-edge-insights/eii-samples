@@ -32,6 +32,8 @@ def start_subscriber():
 
     try:
         ctx = cfg.ConfigMgr()
+        if ctx.get_num_subscribers() is -1:
+            raise "No subscriber instances found, exiting..."
         sub_ctx = ctx.get_subscriber_by_index(0)
         msgbus_cfg = sub_ctx.get_msgbus_config()
 

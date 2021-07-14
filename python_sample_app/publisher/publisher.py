@@ -34,6 +34,8 @@ def start_publisher():
 
     try:
         ctx = cfg.ConfigMgr()
+        if ctx.get_num_publishers() == -1:
+            raise "No publisher instances found, exiting..."
         pub_ctx = ctx.get_publisher_by_index(0)
         msgbus_cfg = pub_ctx.get_msgbus_config()
 
