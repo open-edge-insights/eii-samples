@@ -70,7 +70,7 @@ spec:
         {{- if .Values.config.cpppublisher }}
         {{- if eq .Values.config.cppsubscriber.IPC false}}
         - name: SUBSCRIBER_sample_sub_ENDPOINT
-          value: "{{ .Values.config.cpppublisher.name }}:{{ .Values.config.cpppublisher.publisher_port }}"
+          value: "{{ .Values.config.cpppublisher.name }}:{{ .Values.config.cpppublisher.publish_port }}"
         - name: SUBSCRIBER_sample_sub_TYPE
           value: "zmq_tcp"
         - name: CLIENT_sample_client_ENDPOINT

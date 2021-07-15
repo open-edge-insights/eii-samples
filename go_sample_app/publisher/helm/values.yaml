@@ -1,6 +1,6 @@
 config:
     gopublisher:
       name: gopublisher
-      publisher_port: 60081
+      publish_port: 60081
       server_port: 60071
       IPC: false

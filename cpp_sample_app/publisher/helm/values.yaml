@@ -1,6 +1,6 @@
 config:
     cpppublisher:
       name: cpppublisher
-      publisher_port: 60088
+      publish_port: 60088
       server_port: 60078
       IPC: false

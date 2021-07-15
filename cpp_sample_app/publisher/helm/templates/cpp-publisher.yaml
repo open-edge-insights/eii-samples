@@ -25,7 +25,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   ports:
-  - port: {{ .Values.config.cpppublisher.publisher_port }}
+  - port: {{ .Values.config.cpppublisher.publish_port }}
     name: publisher-port
   - port: {{ .Values.config.cpppublisher.server_port }}
     name: server-port
@@ -85,7 +85,7 @@ spec:
         - name: PUBLISHER_sample_pub_TYPE
           value: "zmq_tcp"
         - name: PUBLISHER_sample_pub_ENDPOINT
-          value: "0.0.0.0:{{ .Values.config.cpppublisher.publisher_port }}"
+          value: "0.0.0.0:{{ .Values.config.cpppublisher.publish_port }}"
         - name: SERVER_echo_service_TYPE
           value: "zmq_tcp"
         - name: SERVER_echo_service_ENDPOINT

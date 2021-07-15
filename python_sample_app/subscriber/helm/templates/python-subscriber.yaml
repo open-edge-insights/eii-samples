@@ -70,7 +70,7 @@ spec:
         {{- if .Values.config.pythonpublisher }}
         {{- if eq .Values.config.pythonsubscriber.IPC false}}
         - name: SUBSCRIBER_ENDPOINT
-          value: "{{ .Values.config.pythonpublisher.name }}:{{ .Values.config.pythonpublisher.publisher_port }}"
+          value: "{{ .Values.config.pythonpublisher.name }}:{{ .Values.config.pythonpublisher.publish_port }}"
         - name: SUBSCRIBER_TYPE
           value: "zmq_tcp"
         - name: CLIENT_echo_service_ENDPOINT
