@@ -11,7 +11,7 @@
 
 The high level logical flow of Sample App is as below:
    
-   1. Publisher contacts to ETCD service, using the [env_config](../../common/libs/ConfigManager/src/env_config.c)
+   1. Publisher contacts to ETCD service, using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)
       library. It fetches it's private key and allowed client's public keys. Then it creates
       the publisher object and starts publishing the sample data at given topic
       (topic name : publish_test).
@@ -21,7 +21,7 @@ The high level logical flow of Sample App is as below:
       
       As mentioned in **NOTE** the publisher and server are running inside ia_cpp_publisher container.
 
-   3. Subscriber contacts to ETCD service using the [env_config](../../common/libs/ConfigManager/src/env_config.c)
+   3. Subscriber contacts to ETCD service using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)
       library. It fetches it's private and public key and public key of publisher. It then creates
       the subscriber object (which subscribes to the same topic : publish_test) and start receiving
       the data and prints the same onto a console.

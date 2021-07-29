@@ -8,7 +8,7 @@ There are three sample apps for EII:
 ## Steps to run EII samples apps
 
 1. Each sample app expects a set of config, interfaces & public private keys to be present in ETCD as a pre-requisite.
-To achieve this, please ensure an entry for a publisher-subscriber pair with its relative path from [IEdgeInsights](../) directory is set in any of the .yml files present in the [build/usecases](../build/usecases) directory. An example has been provided below:
+To achieve this, please ensure an entry for a publisher-subscriber pair with its relative path from [IEdgeInsights](../) directory is set in any of the .yml files present in the [build/usecases](https://github.com/open-edge-insights/eii-core/blob/master/build/usecases) directory. An example has been provided below:
 
 ```yaml
     AppContexts:
@@ -24,4 +24,4 @@ To achieve this, please ensure an entry for a publisher-subscriber pair with its
     $ cd [WORKDIR]/IEdgeInsights/build
     $ python3 builder.py -f ./usecases/<yml file used>
     ```
-3. Refer [README.md](../README.md) to provision, build and run the Sample Apps
+3. Refer [README.md](https://github.com/open-edge-insights/eii-core/blob/master/README.md) to provision, build and run the Sample Apps
