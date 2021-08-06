@@ -1,0 +1,6 @@
+config:
+    pythonpublisher:
+      name: pythonpublisher
+      publish_port: 65020
+      server_port: 65117
+      IPC: false

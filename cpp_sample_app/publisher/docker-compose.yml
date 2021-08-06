@@ -7,21 +7,20 @@ services:
       - ia_eiibase
       - ia_common
     build:
-      context: $PWD/../CppPublisher
-      dockerfile: $PWD/../CppPublisher/Dockerfile
+      context: $PWD/../Samples/cpp_sample_app/publisher
+      dockerfile: $PWD/../Samples/cpp_sample_app/publisher/Dockerfile
       args:
         EII_VERSION: ${EII_VERSION}
         EII_UID: ${EII_UID}
         EII_USER_NAME: ${EII_USER_NAME}
-        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        UBUNTU_IMAGE_VERSION: ${UBUNTU_IMAGE_VERSION}
+        CMAKE_INSTALL_PREFIX: ${EII_INSTALL_PATH}
         # set CMAKE_BUILD_TYPE value to "Debug" to generate debug symbols
         CMAKE_BUILD_TYPE: "Release"
     image: ${DOCKER_REGISTRY}ia_cpp_publisher:${EII_VERSION}
     container_name: ia_cpp_publisher
     hostname: ia_cpp_publisher
-    network_mode: host
     restart: unless-stopped
-    user: ${EII_UID}
     read_only: true
     security_opt:
     - no-new-privileges
@@ -31,11 +30,16 @@ services:
     environment:
       AppName: "CppPublisher"
       DEV_MODE: ${DEV_MODE}
-      no_proxy: ${eii_no_proxy},${ETCD_HOST}
+      no_proxy: ${ETCD_HOST}
       ETCD_HOST: ${ETCD_HOST}
       ETCD_CLIENT_PORT: ${ETCD_CLIENT_PORT}
       ETCD_PREFIX: ${ETCD_PREFIX}
       CertType: "zmq"
+    ports:
+      - 60088:60088
+      - 60078:60078
+    networks:
+      - eii
     volumes:
       - "vol_eii_socket:${SOCKET_DIR}"
     secrets:

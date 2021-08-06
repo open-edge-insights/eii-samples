@@ -9,7 +9,7 @@
             {
                 "Name": "sample_sub",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60088",
+                "EndPoint": "ia_cpp_publisher:60088",
                 "PublisherAppName": "CppPublisher",
                 "Topics": [
                     "publish_test"
@@ -21,7 +21,7 @@
                 "Name": "sample_client",
                 "ServerAppName": "CppPublisher",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60078"
+                "EndPoint": "ia_cpp_publisher:60078"
             }
         ]
     }

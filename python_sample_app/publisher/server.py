@@ -36,6 +36,8 @@ def start_server():
         print('[INFO] Initializing message bus context')
 
         ctx = cfg.ConfigMgr()
+        if ctx.get_num_servers() is -1:
+            raise "No server instances found, exiting..."
         server_ctx = ctx.get_server_by_index(0)
         msgbus_cfg = server_ctx.get_msgbus_config()
         msgbus = mb.MsgbusContext(msgbus_cfg)

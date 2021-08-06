@@ -37,6 +37,8 @@ def start_client():
         print('[INFO] Initializing message bus context')
 
         ctx = cfg.ConfigMgr()
+        if ctx.get_num_clients() is -1:
+            raise "No client instances found, exiting..."
         client_ctx = ctx.get_client_by_index(0)
         msgbus_cfg = client_ctx.get_msgbus_config()
 

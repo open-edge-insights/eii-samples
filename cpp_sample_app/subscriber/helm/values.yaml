@@ -1,0 +1,4 @@
+config:
+    cppsubscriber:
+      name: cppsubscriber
+      IPC: false

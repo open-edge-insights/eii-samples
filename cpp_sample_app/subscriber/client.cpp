@@ -51,6 +51,13 @@ Client::~Client() {
 }
 
 bool Client::init() {
+
+    int num_of_clients = client_ch->getNumClients();
+    if (num_of_clients == -1) {
+        LOG_ERROR_0("No client instances found, exiting...");
+        return false;
+    }
+
     // ClientCfg* client_ctx = client_ch->getClientByName("sample_client");
     ClientCfg* client_ctx = client_ch->getClientByIndex(0);
     config_t* config_client = client_ctx->getMsgBusConfig();

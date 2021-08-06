@@ -22,28 +22,54 @@
 # Dockerfile for Python_sample_subscriber
 ARG EII_VERSION
 ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}ia_eiibase:$EII_VERSION as eiibase
+ARG ARTIFACTS="/artifacts"
+ARG EII_UID
+ARG EII_USER_NAME
+ARG UBUNTU_IMAGE_VERSION
+FROM ia_eiibase:$EII_VERSION as base
+FROM ia_common:$EII_VERSION as common
 
-WORKDIR ${PY_WORK_DIR}
+FROM base as builder
+LABEL description="Python_sample_subscriber image"
 
-ENV PYTHONPATH ${PY_WORK_DIR}/
-
-#Removing build dependencies
-RUN apt-get remove -y wget && \
-    apt-get remove curl && \
-    apt-get autoremove -y
-
-FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
-
-FROM eiibase
-
-COPY --from=common ${GO_WORK_DIR}/common/util ${PY_WORK_DIR}/util
-COPY --from=common ${GO_WORK_DIR}/common/libs ${PY_WORK_DIR}/libs
-COPY --from=common /usr/local/lib /usr/local/lib
-COPY --from=common /usr/local/lib/python3.6/dist-packages/ /usr/local/lib/python3.6/dist-packages
+ARG ARTIFACTS
+RUN mkdir $ARTIFACTS
+WORKDIR /app
 
 COPY ./*.py ./
+RUN mv ./*.py $ARTIFACTS
+
+FROM ubuntu:$UBUNTU_IMAGE_VERSION as runtime
+
+# Setting python dev env
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends python3-distutils && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+ARG EII_UID
+ARG EII_USER_NAME
+RUN groupadd $EII_USER_NAME -g $EII_UID && \
+    useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
+
+ARG ARTIFACTS
+ARG CMAKE_INSTALL_PREFIX
+ENV PYTHONPATH $PYTHONPATH:/app/.local/lib/python3.8/site-packages:/app
+COPY --from=common ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib
+COPY --from=common /eii/common/util/*.py util/
+COPY --from=common /root/.local/lib .local/lib
+COPY --from=builder $ARTIFACTS .
+RUN chown -R ${EII_UID} .local/lib/python3.8
+USER $EII_USER_NAME
+
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${CMAKE_INSTALL_PREFIX}/lib
+ENV PATH $PATH:/app/.local/bin
 
 HEALTHCHECK NONE
 
-ENTRYPOINT ["python3.6", "-u", "main.py"]
+ENTRYPOINT ["python3", "-u", "main.py"]
+

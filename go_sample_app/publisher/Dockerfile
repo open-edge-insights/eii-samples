@@ -21,26 +21,53 @@
 
 # Dockerfile for GO_sample_publisher
 ARG EII_VERSION
-ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}ia_eiibase:$EII_VERSION as eiibase
+ARG UBUNTU_IMAGE_VERSION
+ARG ARTIFACTS="/artifacts"
+FROM ia_common:$EII_VERSION as common
+FROM ia_eiibase:${EII_VERSION} as builder
+LABEL description="GO_sample_publisher image"
 
-WORKDIR ${GO_WORK_DIR}
+WORKDIR ${GOPATH}/src/IEdgeInsights
+ARG CMAKE_INSTALL_PREFIX
+ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+COPY --from=common ${CMAKE_INSTALL_PREFIX}/include ${CMAKE_INSTALL_PREFIX}/include
+COPY --from=common ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib
+COPY --from=common /eii/common/util/util.go common/util/util.go
+COPY --from=common ${GOPATH}/src ${GOPATH}/src
+COPY --from=common /eii/common/libs/EIIMessageBus/go/EIIMessageBus $GOPATH/src/EIIMessageBus
+COPY --from=common /eii/common/libs/ConfigMgr/go/ConfigMgr $GOPATH/src/ConfigMgr
 
-FROM ${DOCKER_REGISTRY}ia_common:$EII_VERSION as common
-
-FROM eiibase
-
-COPY --from=common ${GO_WORK_DIR}/common/libs ${GO_WORK_DIR}/common/libs
-COPY --from=common ${GO_WORK_DIR}/common/util ${GO_WORK_DIR}/common/util
-COPY --from=common /usr/local/lib /usr/local/lib
-COPY --from=common /usr/local/include /usr/local/include
-COPY --from=common ${GO_WORK_DIR}/../EIIMessageBus ${GO_WORK_DIR}/../EIIMessageBus
-COPY --from=common ${GO_WORK_DIR}/../ConfigMgr ${GO_WORK_DIR}/../ConfigMgr
 
 COPY ./*.go ./
 
-RUN go build -o ${GO_WORK_DIR}/main ./*.go
+ENV PATH="$PATH:/usr/local/go/bin" \
+    PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" \
+    LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${CMAKE_INSTALL_PREFIX}/lib"
 
+# These flags are needed for enabling security while compiling and linking with cpuidcheck in golang
+ENV CGO_CFLAGS="$CGO_FLAGS -I ${CMAKE_INSTALL_PREFIX}/include -O2 -D_FORTIFY_SOURCE=2 -Werror=format-security -fstack-protector-strong -fPIC" \
+    CGO_LDFLAGS="$CGO_LDFLAGS -L${CMAKE_INSTALL_PREFIX}/lib -z noexecstack -z relro -z now"
+
+ARG ARTIFACTS
+RUN mkdir $ARTIFACTS && \
+    go build -o $ARTIFACTS/main ./*.go
+
+FROM ubuntu:$UBUNTU_IMAGE_VERSION as runtime
+ARG ARTIFACTS
+ARG EII_UID
+ARG EII_USER_NAME
+RUN groupadd $EII_USER_NAME -g $EII_UID && \
+    useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
+
+WORKDIR /app
+
+ARG CMAKE_INSTALL_PREFIX
+ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+COPY --from=builder ${CMAKE_INSTALL_PREFIX}/lib .local/lib
+COPY --from=builder $ARTIFACTS .
+USER $EII_USER_NAME
+
+ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/app/.local/lib
 HEALTHCHECK NONE
+ENTRYPOINT ["./main"]
 
-ENTRYPOINT ["/EII/go/src/IEdgeInsights/main"]

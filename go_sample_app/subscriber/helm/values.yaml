@@ -1,0 +1,4 @@
+config:
+    gosubscriber:
+      name: gosubscriber
+      IPC: false

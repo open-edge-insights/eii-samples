@@ -9,7 +9,7 @@
             {
                 "Name": "sample_sub",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60081",
+                "EndPoint": "ia_go_publisher:60081",
                 "PublisherAppName": "GoPublisher",
                 "Topics": [
                     "publish_test"
@@ -21,7 +21,7 @@
                 "Name": "sample_client",
                 "ServerAppName": "GoPublisher",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:60071"
+                "EndPoint": "ia_go_publisher:60071"
             }
         ]
     }

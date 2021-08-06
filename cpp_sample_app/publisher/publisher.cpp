@@ -45,6 +45,13 @@ Publisher::~Publisher() {
 }
 
 bool Publisher::init() {
+
+    int num_of_publishers = pub_ch->getNumPublishers();
+    if (num_of_publishers == -1) {
+        LOG_ERROR_0("No publisher instances found, exiting...");
+        return false;
+    }
+
     PublisherCfg* pub_ctx = pub_ch->getPublisherByIndex(0);
     // PublisherCfg* pub_ctx = pub_ch->getPublisherByName("sample_pub");
     config_t* pub_config = pub_ctx->getMsgBusConfig();

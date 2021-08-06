@@ -51,6 +51,13 @@ Server::~Server() {
 
 bool Server::init() {
     server_ch = new ConfigMgr();
+
+    int num_of_servers = server_ch->getNumServers();
+    if (num_of_servers == -1) {
+        LOG_ERROR_0("No server instances found, exiting...");
+        return false;
+    }
+
     // ServerCfg* server_ctx = server_ch->getServerByName("echo_service");
     ServerCfg* server_ctx = server_ch->getServerByIndex(0);
     config_t* service_config = server_ctx->getMsgBusConfig();

@@ -1,0 +1,4 @@
+config:
+    pythonsubscriber:
+      name: pythonsubscriber
+      IPC: false

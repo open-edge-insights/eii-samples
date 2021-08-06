@@ -1,12 +1,12 @@
 /*
-Copyright (c) 2020 Intel Corporation.
+Copyright (c) 2021 Intel Corporation
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
@@ -38,6 +38,12 @@ func start_client() {
 		glog.Fatal("Config Manager initialization failed...")
 	}
 	defer configmgr.Destroy()
+
+	numOfClients, _ := configmgr.GetNumClients()
+	if numOfClients == -1 {
+		glog.Errorf("No client instances found, exiting...")
+		return
+	}
 
 	// clientctx, err := configmgr.GetClientByName("echo_client")
 	clientctx, err := configmgr.GetClientByIndex(0)

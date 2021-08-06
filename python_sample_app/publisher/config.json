@@ -7,7 +7,7 @@
             {
                 "Name": "Image_Metadata",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:65020",
+                "EndPoint": "0.0.0.0:65020",
                 "AllowedClients": [
                     "PythonSubscriber"
                 ],
@@ -21,7 +21,7 @@
             {
                 "Name": "echo_service",
                 "Type": "zmq_tcp",
-                "EndPoint": "127.0.0.1:65117",
+                "EndPoint": "0.0.0.0:65117",
                 "AllowedClients": [
                     "PythonSubscriber"
                 ]
