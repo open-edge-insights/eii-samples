@@ -3,7 +3,7 @@
 There are three sample apps for EII:
 1. [cpp_sample_app](cpp_sample_app/README.md)
 2. [go_sample_app](go_sample_app/README.md)
-3. [python_sample_app](python_sample_app/README.MD)
+3. [python_sample_app](python_sample_app/README.md)
 
 ## Steps to run EII samples apps
 
@@ -20,6 +20,7 @@ To achieve this, please ensure an entry for a publisher-subscriber pair with its
     - Samples/python_sample_app/subscriber
 ```
 2.  With the above pre-requisite done, please run the below command:
+
     ```sh
     $ cd [WORKDIR]/IEdgeInsights/build
     $ python3 builder.py -f ./usecases/<yml file used>
