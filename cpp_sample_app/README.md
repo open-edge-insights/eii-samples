@@ -1,6 +1,7 @@
 ## Sample CPP APP for EII platform ##
 
 # 'Short Description of App containers'
+
    The sample CPP application demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
    In this APP, there is a publisher,subscriber,client and server, subscriber-client and publisher-server are running, inside independent
    containers (container names are ia_cpp_publisher, ia_cpp_subscriber).
@@ -8,9 +9,8 @@
    **NOTE**: ia_cpp_publisher container comprises of both publisher and server functionality.
              ia_cpp_subscriber container comprises of both subscriber and client functionality.
 
-
 The high level logical flow of Sample App is as below:
-   
+
    1. Publisher contacts to ETCD service, using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)
       library. It fetches it's private key and allowed client's public keys. Then it creates
       the publisher object and starts publishing the sample data at given topic
@@ -18,7 +18,7 @@ The high level logical flow of Sample App is as below:
 
    2. Server contacts to ETCD service, and fetches it's private key and allowed client's public keys.
       Then it creates a server object according to given service name and waits for the client's request.
-      
+
       As mentioned in **NOTE** the publisher and server are running inside ia_cpp_publisher container.
 
    3. Subscriber contacts to ETCD service using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)

@@ -1,6 +1,7 @@
-# Sample Python APP for EII platform #
+# Sample Python APP for EII platform # 
 
 # Short Description of App containers
+
 This is a sample Python application which demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
 
 In this app, there is a publisher, a subscriber a client and a
@@ -8,12 +9,12 @@ server. Subscriber-client and publisher-server are running inside independent
 containers(container names are ia_python_publisher, ia_python_subscriber).
 
 **NOTE**:
+
 1. ia_python_publisher container comprises of both publisher and server
 functionality.
 
 2. ia_python_subscriber container comprises of both subscriber and
 client functionality.
-
 
 The high level logical flow of Sample App is as below:
 
