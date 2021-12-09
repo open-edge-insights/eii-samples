@@ -1,13 +1,12 @@
-# The sample Golang application demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager #
+# Sample Golang App
 
-# Short Description of App containers
 
 This is a Golang Application which uses the EII message bus and EII client side
 libraries. In this app, there is a publisher, subscriber, client and server.
 Subscriber and client are running inside ia_go_subscriber container.
 Publisher and server are running inside ia_go_publisher container.
 
-# The high level logical flow of Sample App is as below
+The high level logical flow of Sample App is as below
 
 1. Publisher contacts to ETCD service, using the 'msgbusutil'
 (IEdgeInsights/common/util/msgbusutil) library. It fetches it's private key

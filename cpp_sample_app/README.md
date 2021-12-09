@@ -1,13 +1,11 @@
-## Sample CPP APP for EII platform ##
+# Sample CPP App
 
-# 'Short Description of App containers'
+The sample CPP application demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
+In this APP, there is a publisher,subscriber,client and server, subscriber-client and publisher-server are running, inside independent
+containers (container names are ia_cpp_publisher, ia_cpp_subscriber).
 
-   The sample CPP application demonstrates the usage of EII core libraries like EIIMessageBus and ConfigManager.
-   In this APP, there is a publisher,subscriber,client and server, subscriber-client and publisher-server are running, inside independent
-   containers (container names are ia_cpp_publisher, ia_cpp_subscriber).
-
-   **NOTE**: ia_cpp_publisher container comprises of both publisher and server functionality.
-             ia_cpp_subscriber container comprises of both subscriber and client functionality.
+**NOTE:** ia_cpp_publisher container comprises of both publisher and server functionality.
+          ia_cpp_subscriber container comprises of both subscriber and client functionality.
 
 The high level logical flow of Sample App is as below:
 
