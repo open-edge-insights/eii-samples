@@ -1,0 +1,30 @@
+{
+    "config" : {
+        "loop_interval": 1
+    },
+
+    "interfaces" : {
+        "Subscribers": [
+            {
+                "AllowedClients": [
+                    "*"
+                ],
+                "EndPoint": "ia_alpine_cpp_sample_pub:60090",
+                "Name": "default",
+                "PublisherAppName": "AlpineCppSamplePub",
+                "Topics": [
+                    "publish_test"
+                ],
+                "Type": "zmq_tcp"
+            }
+        ],
+        "Clients": [
+                {
+                    "Name": "default",
+                    "ServerAppName": "AlpineCppSamplePub",
+                    "Type": "zmq_tcp",
+                    "EndPoint": "ia_alpine_cpp_sample_pub:60078"
+                }
+            ]
+    }
+}

@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Intel Corporation.
+# Copyright (c) 2021 Intel Corporation.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,7 @@
 import time
 import eii.msgbus as mb
 import os
-import json
-from distutils.util import strtobool
 import cfgmgr.config_manager as cfg
-from util.util import Util
 
 
 def start_client():
@@ -43,10 +40,10 @@ def start_client():
         msgbus_cfg = client_ctx.get_msgbus_config()
 
         msgbus = mb.MsgbusContext(msgbus_cfg)
-        print(f'[INFO] Initializing service for {"echo_service"}')
+        print(f'[INFO] Initializing service for {"default"}')
 
         # TODO: dynamically get this value using get_app_interface()
-        service = msgbus.get_service("echo_service")
+        service = msgbus.get_service("default")
         # Request used for the example
         request = {'int': 42, 'float': 55.5,
                    'str': 'Hello, World!', 'bool': True}

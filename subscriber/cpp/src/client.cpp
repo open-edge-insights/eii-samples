@@ -58,7 +58,7 @@ bool Client::init() {
         return false;
     }
 
-    // ClientCfg* client_ctx = client_ch->getClientByName("sample_client");
+    // ClientCfg* client_ctx = client_ch->getClientByName("default");
     ClientCfg* client_ctx = client_ch->getClientByIndex(0);
     config_t* config_client = client_ctx->getMsgBusConfig();
 
@@ -69,7 +69,7 @@ bool Client::init() {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_service_get(g_msgbus_ctx_client, "sample_client", NULL,
+    ret = msgbus_service_get(g_msgbus_ctx_client, "default", NULL,
                              &g_service_ctx);
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);

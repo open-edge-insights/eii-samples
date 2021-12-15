@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Intel Corporation.
+# Copyright (c) 2021 Intel Corporation.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,7 @@
 
 import eii.msgbus as mb
 import os
-from distutils.util import strtobool
 import cfgmgr.config_manager as cfg
-from util.util import Util
 
 
 def start_subscriber():

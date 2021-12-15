@@ -6,26 +6,25 @@
     "interfaces" : {
         "Publishers": [
             {
-                "Name": "sample_pub",
-                "Type": "zmq_tcp",
+                "AllowedClients": [
+                    "*"
+                ],
                 "EndPoint": "0.0.0.0:60088",
+                "Name": "default",
                 "Topics": [
                     "publish_test"
                 ],
-                "AllowedClients": [
-                    "CppSubscriber"
-                ]
+                "Type": "zmq_tcp"
             }
         ],
-
         "Servers": [
             {
-                "Name": "echo_service",
-                "Type": "zmq_tcp",
-                "EndPoint": "0.0.0.0:60078",
                 "AllowedClients": [
-                    "CppSubscriber"
-                ]
+                    "*"
+                ],
+                "EndPoint": "0.0.0.0:60080",
+                "Name": "default",
+                "Type": "zmq_tcp"
             }
         ]
     }

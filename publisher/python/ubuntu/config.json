@@ -5,11 +5,11 @@
     "interfaces":{
         "Publishers": [
             {
-                "Name": "Image_Metadata",
+                "Name": "default",
                 "Type": "zmq_tcp",
                 "EndPoint": "0.0.0.0:65020",
                 "AllowedClients": [
-                    "PythonSubscriber"
+                    "*"
                 ],
                 "Topics": [
                     "camera1_stream_results",
@@ -19,11 +19,11 @@
         ],
         "Servers": [
             {
-                "Name": "echo_service",
+                "Name": "default",
                 "Type": "zmq_tcp",
                 "EndPoint": "0.0.0.0:65117",
                 "AllowedClients": [
-                    "PythonSubscriber"
+                    "*"
                 ]
             }
         ]

@@ -5,18 +5,18 @@
     "interfaces":{
         "Clients": [
             {
-                "Name": "echo_service",
+                "Name": "default",
                 "Type": "zmq_tcp",
-                "EndPoint": "ia_python_publisher:65117",
-                "ServerAppName": "PythonPublisher"
+                "EndPoint": "ia_ubuntu_python_sample_pub:65117",
+                "ServerAppName": "UbuntuPythonSamplePub"
             }
         ],
         "Subscribers": [
             {
                 "Name": "default",
                 "Type": "zmq_tcp",
-                "EndPoint": "ia_python_publisher:65020",
-                "PublisherAppName": "PythonPublisher",
+                "EndPoint": "ia_ubuntu_python_sample_pub:65020",
+                "PublisherAppName": "UbuntuPythonSamplePub",
                 "Topics": [
                     "camera1_stream_results"
                 ]

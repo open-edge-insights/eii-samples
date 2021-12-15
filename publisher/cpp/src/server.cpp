@@ -58,7 +58,7 @@ bool Server::init() {
         return false;
     }
 
-    // ServerCfg* server_ctx = server_ch->getServerByName("echo_service");
+    // ServerCfg* server_ctx = server_ch->getServerByName("default");
     ServerCfg* server_ctx = server_ch->getServerByIndex(0);
     config_t* service_config = server_ctx->getMsgBusConfig();
 
@@ -69,7 +69,7 @@ bool Server::init() {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_service_new(g_msgbus_ctx_server, "echo_service", NULL,
+    ret = msgbus_service_new(g_msgbus_ctx_server, "default", NULL,
                              &g_service_ctx);
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize service (errno: %d)", ret);
