@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Intel Corporation.
+# Copyright (c) 2021 Intel Corporation.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,55 +19,65 @@
 # SOFTWARE.
 
 
-# Dockerfile for GO_sample_publisher
-ARG EII_VERSION
-ARG UBUNTU_IMAGE_VERSION
-ARG ARTIFACTS="/artifacts"
-FROM ia_common:$EII_VERSION as common
-FROM ia_eiibase:${EII_VERSION} as builder
-LABEL description="GO_sample_publisher image"
+ARG GO_VERSION
+FROM golang:${GO_VERSION}-alpine as builder
 
-WORKDIR ${GOPATH}/src/IEdgeInsights
+LABEL description="GO alpine sample publisher image"
+
 ARG CMAKE_INSTALL_PREFIX
 ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-COPY --from=common ${CMAKE_INSTALL_PREFIX}/include ${CMAKE_INSTALL_PREFIX}/include
-COPY --from=common ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib
-COPY --from=common /eii/common/util/util.go common/util/util.go
-COPY --from=common ${GOPATH}/src ${GOPATH}/src
-COPY --from=common /eii/common/libs/EIIMessageBus/go/EIIMessageBus $GOPATH/src/EIIMessageBus
-COPY --from=common /eii/common/libs/ConfigMgr/go/ConfigMgr $GOPATH/src/ConfigMgr
-
-
-COPY ./*.go ./
 
 ENV PATH="$PATH:/usr/local/go/bin" \
     PKG_CONFIG_PATH="$PKG_CONFIG_PATH:${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" \
     LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${CMAKE_INSTALL_PREFIX}/lib"
 
-# These flags are needed for enabling security while compiling and linking with cpuidcheck in golang
+# # These flags are needed for enabling security while compiling and linking with cpuidcheck in golang
 ENV CGO_CFLAGS="$CGO_FLAGS -I ${CMAKE_INSTALL_PREFIX}/include -O2 -D_FORTIFY_SOURCE=2 -Werror=format-security -fstack-protector-strong -fPIC" \
     CGO_LDFLAGS="$CGO_LDFLAGS -L${CMAKE_INSTALL_PREFIX}/lib -z noexecstack -z relro -z now"
 
-ARG ARTIFACTS
-RUN mkdir $ARTIFACTS && \
-    go build -o $ARTIFACTS/main ./*.go
+WORKDIR /app
 
-FROM ubuntu:$UBUNTU_IMAGE_VERSION as runtime
-ARG ARTIFACTS
+RUN apk add cmake make gcc g++ cjson-dev wget
+
+ARG PKG_SRC
+RUN wget ${PKG_SRC}/apks/eii-utils-2.6.0-r0.apk && \
+    wget ${PKG_SRC}/apks/eii-messagebus-2.6.0-r0.apk && \
+    wget ${PKG_SRC}/apks/eii-configmanager-2.6.0-r0.apk
+
+RUN apk add --allow-untrusted /app/eii-utils-2.6.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-messagebus-2.6.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-configmanager-2.6.0-r0.apk
+
+RUN wget ${PKG_SRC}/gomod/eii-messagebus-go.tar.gz && \
+    wget ${PKG_SRC}/gomod/eii-configmgr-go.tar.gz
+
+RUN tar xvzf eii-messagebus-go.tar.gz && \
+    tar xvzf eii-configmgr-go.tar.gz
+
+COPY ./publisher/go/ ./
+
+RUN go get -u && \
+    go mod tidy
+
+RUN GO111MODULE=on go build -o /app/main ./*.go
+
+FROM golang:${GO_VERSION}-alpine as runtime
+
 ARG EII_UID
 ARG EII_USER_NAME
-RUN groupadd $EII_USER_NAME -g $EII_UID && \
-    useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
-RUN apt update && apt install --no-install-recommends -y libcjson1 libzmq5 zlib1g && \
-    rm -rf /var/lib/apt/lists/*
+RUN adduser -u ${EII_UID} -D -h /home/${EII_USER_NAME} ${EII_USER_NAME}
 
 WORKDIR /app
 
-ARG CMAKE_INSTALL_PREFIX
-ENV CMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
-COPY --from=builder ${CMAKE_INSTALL_PREFIX}/lib .local/lib
-COPY --from=builder $ARTIFACTS .
+COPY --from=builder /app/*.apk /app/
+
+RUN apk add --allow-untrusted /app/eii-utils-2.6.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-messagebus-2.6.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-configmanager-2.6.0-r0.apk
+
 USER $EII_USER_NAME
+
+COPY --from=builder /app/* /app/
 
 ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/app/.local/lib
 HEALTHCHECK NONE

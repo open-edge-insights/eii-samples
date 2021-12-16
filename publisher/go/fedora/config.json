@@ -1,0 +1,32 @@
+{
+    "config" : {
+        "loop_interval": 1
+    },
+
+    "interfaces" : {
+        "Publishers": [
+            {
+                "Name": "sample_pub",
+                "Type": "zmq_tcp",
+                "EndPoint": "0.0.0.0:60083",
+                "Topics": [
+                    "publish_test"
+                ],
+                "AllowedClients": [
+                    "*"
+                ]
+            }
+        ],
+
+        "Servers": [
+            {
+                "Name": "echo_service",
+                "Type": "zmq_tcp",
+                "EndPoint": "0.0.0.0:60073",
+                "AllowedClients": [
+                    "*"
+                ]
+            }
+        ]
+    }
+}

@@ -8,12 +8,12 @@
             {
                 "Name": "sample_pub",
                 "Type": "zmq_tcp",
-                "EndPoint": "0.0.0.0:60081",
+                "EndPoint": "0.0.0.0:60082",
                 "Topics": [
                     "publish_test"
                 ],
                 "AllowedClients": [
-                    "GoSubscriber"
+                    "*"
                 ]
             }
         ],
@@ -22,9 +22,9 @@
             {
                 "Name": "echo_service",
                 "Type": "zmq_tcp",
-                "EndPoint": "0.0.0.0:60071",
+                "EndPoint": "0.0.0.0:60072",
                 "AllowedClients": [
-                    "GoSubscriber"
+                    "*"
                 ]
             }
         ]

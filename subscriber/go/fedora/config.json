@@ -9,8 +9,8 @@
             {
                 "Name": "sample_sub",
                 "Type": "zmq_tcp",
-                "EndPoint": "ia_go_publisher:60081",
-                "PublisherAppName": "GoPublisher",
+                "EndPoint": "ia_fedora_go_sample_pub:60083",
+                "PublisherAppName": "FedoraGoSamplePub",
                 "Topics": [
                     "publish_test"
                 ]
@@ -19,9 +19,9 @@
         "Clients": [
             {
                 "Name": "sample_client",
-                "ServerAppName": "GoPublisher",
+                "ServerAppName": "FedoraGoSamplePub",
                 "Type": "zmq_tcp",
-                "EndPoint": "ia_go_publisher:60071"
+                "EndPoint": "ia_fedora_go_sample_pub:60073"
             }
         ]
     }

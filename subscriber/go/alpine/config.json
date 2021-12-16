@@ -1,0 +1,28 @@
+{
+    "config" : {
+        "loop_interval": 1
+    },
+
+    "interfaces" : {
+   
+        "Subscribers": [
+            {
+                "Name": "sample_sub",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_alpine_go_sample_pub:60082",
+                "PublisherAppName": "AlpineGoSamplePub",
+                "Topics": [
+                    "publish_test"
+                ]
+            }
+        ],
+        "Clients": [
+            {
+                "Name": "sample_client",
+                "ServerAppName": "AlpineGoSamplePub",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_alpine_go_sample_pub:60072"
+            }
+        ]
+    }
+}

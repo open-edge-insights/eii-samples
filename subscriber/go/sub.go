@@ -23,14 +23,15 @@ SOFTWARE.
 package main
 
 import (
-	eiicfgmgr "ConfigMgr/eiiconfigmgr"
-	eiimsgbus "EIIMessageBus/eiimsgbus"
+	eiicfgmgr "github.com/open-edge-insights/eii-configmgr-go/eiiconfigmgr"
+	eiimsgbus "github.com/open-edge-insights/eii-messagebus-go/eiimsgbus"
 	"fmt"
+	"time"
 
 	"github.com/golang/glog"
 )
 
-func start_server() {
+func start_subscriber() {
 
 	configmgr, err := eiicfgmgr.ConfigManager()
 	if err != nil {
@@ -38,57 +39,64 @@ func start_server() {
 	}
 	defer configmgr.Destroy()
 
-	numOfServers, _ := configmgr.GetNumServers()
-	if numOfServers == -1 {
-		glog.Errorf("No server instances found, exiting...")
-		return
-	}
-	// serverctx, err := configmgr.GetServerByName("echo_service")
-	serverctx, err := configmgr.GetServerByIndex(0)
-	if err != nil {
-		glog.Fatal("GetServerByIndex is failed")
-	}
-	defer serverctx.Destroy()
-
-	interfaceVal, err := serverctx.GetInterfaceValue("Name")
-	if err != nil {
-		fmt.Printf("Error to GetInterfaceValue of 'Name': %v\n", err)
+	numOfSubscribers, _ := configmgr.GetNumSubscribers()
+	if numOfSubscribers == -1 {
+		glog.Errorf("No subscriber instances found, exiting...")
 		return
 	}
 
-	serviceName, err := interfaceVal.GetString()
+	// subctx, _ := configMgr.GetSubscriberByName("sample_sub")
+	subctx, err := configmgr.GetSubscriberByIndex(0)
 	if err != nil {
-		fmt.Printf("Error to GetString value of 'Name'%v\n", err)
+		glog.Errorf("Error: %v to GetPublisherByIndex", err)
+		return
+	}
+	defer subctx.Destroy()
+
+	config, err := subctx.GetMsgbusConfig()
+	if err != nil {
+		fmt.Printf("-- Error get message bus config: %v\n", err)
 		return
 	}
 
-	config, err := serverctx.GetMsgbusConfig()
+	topics, err := subctx.GetTopics()
 	if err != nil {
-		glog.Fatal("Error occured with error:%v", err)
+		glog.Errorf("Error: %v to GetTopics", err)
+		return
 	}
 
-	sClient, err := eiimsgbus.NewMsgbusClient(config)
+	endpoint, err := subctx.GetEndPoints()
+	if err != nil {
+		glog.Errorf("Error: %v to GetEndPoints", err)
+		return
+	}
+
+	fmt.Printf("Subscriber endpoint:%s", endpoint)
+
+	client, err := eiimsgbus.NewMsgbusClient(config)
 	if err != nil {
 		fmt.Printf("-- Error initializing message bus context: %v\n", err)
 		return
 	}
-	defer sClient.Close()
+	defer client.Close()
 
-	fmt.Printf("-- Initializing service %s\n", serviceName)
-	service, err := sClient.NewService(serviceName)
+	subscriber, err := client.NewSubscriber(topics[0])
 	if err != nil {
-		fmt.Printf("-- Error initializing service: %v\n", err)
+		fmt.Printf("-- Error subscribing to topic: %v\n", err)
+		return
 	}
-	defer service.Close()
+	defer subscriber.Close()
 
-	fmt.Println("-- Running server...")
+	fmt.Println("-- Running Subscriber...")
 
 	for {
-		req, err := service.ReceiveRequest(-1)
-		if err != nil {
-			fmt.Printf("-- Error receiving request: %v\n", err)
+		select {
+		case msg := <-subscriber.MessageChannel:
+			fmt.Printf("-- Received Message from publisher: %v \n", msg)
+		case err := <-subscriber.ErrorChannel:
+			fmt.Printf("-- Error receiving message: %v\n", err)
 		}
-		fmt.Printf("--Server received request: %v\n", req)
-		service.Response(map[string]interface{}{"Response": "OK"})
+
+		time.Sleep(1 * time.Second)
 	}
 }

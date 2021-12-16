@@ -1,31 +1,54 @@
 # EII Sample Apps
 
-There are three sample apps for EII:
+EII Sample Apps demonstrates the usage of core libraries packages like Utils, EIIMessageBus and ConfigManager in different flavors of Linux, i.e., Ubuntu, Alpine and Fedora in cpp, go and python.
 
-1. [cpp_sample_app](cpp_sample_app/README.md)
-2. [go_sample_app](go_sample_app/README.md)
-3. [python_sample_app](python_sample_app/README.md)
+Below table shows the support of sample apps on different flavors of linux on different programming languages
+
+| Linux Flavor | Language         |
+| :----------: | :--------------: |
+| `Ubuntu`     | `CPP, GO, PYTHON`|
+| `Alpine`     | `CPP, GO`        |
+| `Fedora`     | `CPP, GO`        |
+
+These Sample Apps are segregated into publisher and subscriber and below are its respective README.md:
+1. [publisher](publisher/README.md)
+2. [subscriber](subscriber/README.md)
 
 ## Steps to run EII samples apps
 
-1. Each sample app expects a set of config, interfaces & public private keys to be present in ETCD as a pre-requisite.
-To achieve this, please ensure an entry for a publisher-subscriber pair with its relative path from [IEdgeInsights](../) directory is set in any of the .yml files present in the [build/usecases](https://github.com/open-edge-insights/eii-core/blob/master/build/usecases) directory. An example has been provided below:
+Please find the ordered steps for running Sample Apps.
 
-```yaml
+1. As per EII default scenario, the sample custom UDF containers are not mandatory containers to run, hence the builder.py should run `sample-apps.yml` present in the [build/usecases](https://github.com/open-edge-insights/eii-core/blob/master/build/usecases) directory. All the sample apps containers are added in this example. 
+Below code snnipet signifies the same. 
+
+```yml
     AppContexts:
-    - Samples/cpp_sample_app/publisher
-    - Samples/cpp_sample_app/subscriber
-    - Samples/go_sample_app/publisher
-    - Samples/go_sample_app/subscriber
-    - Samples/python_sample_app/publisher
-    - Samples/python_sample_app/subscriber
+    # CPP sample apps for ubuntu, fedora and alpine
+    - Samples/publisher/cpp/ubuntu
+    - Samples/publisher/cpp/fedora
+    - Samples/publisher/cpp/alpine
+    - Samples/subscriber/cpp/ubuntu
+    - Samples/subscriber/cpp/fedora
+    - Samples/subscriber/cpp/alpine
+
+    # Python sample apps for ubuntu
+    - Samples/publisher/python/ubuntu
+    - Samples/subscriber/python/ubuntu
+
+    # Go sample apps for ubuntu, fedora and alpine
+    - Samples/publisher/go/ubuntu
+    - Samples/publisher/go/fedora
+    - Samples/publisher/go/alpine
+    - Samples/subscriber/go/ubuntu
+    - Samples/subscriber/go/fedora
+    - Samples/subscriber/go/alpine
 ```
 
 2. With the above pre-requisite done, please run the below command:
 
     ```sh
     cd [WORKDIR]/IEdgeInsights/build
-    python3 builder.py -f ./usecases/<yml file used>
+    python3 builder.py -f ./usecases/sample-apps.yml file used>
     ```
 
-3. Refer [README.md](https://github.com/open-edge-insights/eii-core/blob/master/README.md) to provision, build and run the Sample Apps
+3. Refer [README.md](https://github.com/open-edge-insights/eii-core/blob/master/README.md) to build and run the Sample Apps
