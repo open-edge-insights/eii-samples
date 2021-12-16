@@ -23,9 +23,6 @@ version: '3.6'
 services:
 
   ia_alpine_go_sample_pub:
-    depends_on:
-      - ia_eiibase
-      - ia_common
     build:
       context: $PWD/../Samples/
       dockerfile: $PWD/../Samples/publisher/go/alpine/Dockerfile
@@ -53,21 +50,15 @@ services:
       ETCD_HOST: ${ETCD_HOST}
       ETCD_CLIENT_PORT: ${ETCD_CLIENT_PORT}
       ETCD_PREFIX: ${ETCD_PREFIX}
-      CertType: "zmq"
+      CONFIGMGR_CACERT: "/run/secrets/rootca/cacert.pem"
+      CONFIGMGR_KEY: "/run/secrets/root/root_client_key.pem"
+      CONFIGMGR_CERT: "/run/secrets/root/root_client_certificate.pem"
     ports:
       - 60082:60082
       - 60072:60072
     networks:
       - eii
     volumes:
-      - "vol_eii_socket:${SOCKET_DIR}"
-    secrets:
-      - ca_etcd
-      - etcd_AlpineGoSamplePub_cert
-      - etcd_AlpineGoSamplePub_key
-
-secrets:
-  etcd_AlpineGoSamplePub_cert:
-    file: provision/Certificates/AlpineGoSamplePub/AlpineGoSamplePub_client_certificate.pem
-  etcd_AlpineGoSamplePub_key:
-    file: provision/Certificates/AlpineGoSamplePub/AlpineGoSamplePub_client_key.pem
+      - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
+      - ./Certificates/root:/run/secrets/root
+      - ./Certificates/rootca:/run/secrets/rootca

@@ -23,8 +23,6 @@ version: '3.6'
 services:
 
   ia_ubuntu_python_sample_sub:
-    depends_on:
-      - ia_eiibase
     build:
       context: $PWD/../Samples/
       dockerfile: $PWD/../Samples/subscriber/python/ubuntu/Dockerfile
@@ -37,6 +35,7 @@ services:
         PYPI_SRC: sagartp-H370M-D3H.iind.intel.com:7800/whls
         MSGBUS_WHL: eii_msgbus-2.6-cp38-cp38-manylinux2014_x86_64.whl
         CFGMGR_WHL: eii_configmgr-2.6-cp38-cp38-manylinux2014_x86_64.whl
+        SOCK_DIR: ${SOCKET_DIR}
     image: ${DOCKER_REGISTRY}ia_ubuntu_python_sample_sub:${EII_VERSION}
     container_name: ia_ubuntu_python_sample_sub 
     hostname: ia_ubuntu_python_sample_sub
@@ -56,20 +55,14 @@ services:
       ETCD_PREFIX: ${ETCD_PREFIX}
       PYTHON_VERSION: ${PYTHON_VERSION}
       # MessageBus Endpoint Configuration
-      CertType: "zmq"
+      CONFIGMGR_CACERT: "/run/secrets/rootca/cacert.pem"
+      CONFIGMGR_KEY: "/run/secrets/root/root_client_key.pem"
+      CONFIGMGR_CERT: "/run/secrets/root/root_client_certificate.pem"
       # ZMQ_RECV_HWM: "1000"
     networks:
       - eii
 
     volumes:
-      - "vol_eii_socket:${SOCKET_DIR}"
-    secrets:
-      - ca_etcd
-      - etcd_UbuntuPythonSampleSub_cert
-      - etcd_UbuntuPythonSampleSub_key
-
-secrets:
-  etcd_UbuntuPythonSampleSub_cert:
-    file: provision/Certificates/UbuntuPythonSampleSub/UbuntuPythonSampleSub_client_certificate.pem
-  etcd_UbuntuPythonSampleSub_key:
-    file: provision/Certificates/UbuntuPythonSampleSub/UbuntuPythonSampleSub_client_key.pem
+      - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
+      - ./Certificates/root:/run/secrets/root
+      - ./Certificates/rootca:/run/secrets/rootca

@@ -1,5 +1,6 @@
 {
     "config":{
+        "cert_type": ["zmq", "pem"],
         "loop_interval": "1"
     },
     "interfaces":{
