@@ -31,7 +31,6 @@ RUN apt update && apt install -y build-essential \
     wget
 
 WORKDIR /app
-COPY ./debs/ /app/debs/
 
 ARG PKG_SRC
 RUN wget ${PKG_SRC}/debs/eii-utils-2.6.0-Linux.deb && \
@@ -71,6 +70,7 @@ ARG EII_UID
 ARG EII_USER_NAME
 RUN groupadd $EII_USER_NAME -g $EII_UID
 RUN useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
+
 USER $EII_USER_NAME
 
 COPY --from=builder /app/release/run /app/run

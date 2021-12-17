@@ -26,8 +26,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-COPY ./debs/ /app/debs/
-
 COPY ./publisher/python/*.py /app/
 
 FROM ubuntu:${UBUNTU_IMAGE_VERSION} as runtime
