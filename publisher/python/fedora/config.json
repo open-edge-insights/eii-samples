@@ -1,0 +1,33 @@
+{
+    "config":{
+        "cert_type": ["zmq", "pem"],
+        "loop_interval": "1"
+    },
+    "interfaces":{
+        "Publishers": [
+            {
+                "Name": "default",
+                "Type": "zmq_tcp",
+                "EndPoint": "0.0.0.0:65021",
+                "AllowedClients": [
+                    "*"
+                ],
+                "Topics": [
+                    "camera1_stream_results",
+                    "camera2_stream_results_metaonly"
+                ]
+            }
+        ],
+        "Servers": [
+            {
+                "Name": "default",
+                "Type": "zmq_tcp",
+                "EndPoint": "0.0.0.0:65118",
+                "AllowedClients": [
+                    "*"
+                ]
+            }
+        ]
+    }
+}
+
