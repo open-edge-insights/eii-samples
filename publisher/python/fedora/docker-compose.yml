@@ -58,8 +58,8 @@ services:
     networks:
       - eii
     ports:
-      - 65020:65020
-      - 65117:65117
+      - 65021:65021
+      - 65118:65118
     volumes:
       - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
       - ./Certificates/FedoraPythonSamplePub:/run/secrets/FedoraPythonSamplePub
