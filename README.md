@@ -8,7 +8,7 @@ Below table shows the support of sample apps on different flavors of linux on di
 | :----------: | :--------------: |
 | `Ubuntu`     | `CPP, GO, PYTHON`|
 | `Alpine`     | `CPP, GO`        |
-| `Fedora`     | `CPP, GO`        |
+| `Fedora`     | `CPP, GO, PYTHON`|
 
 These Sample Apps are segregated into publisher and subscriber and below are its respective README.md:
 1. [publisher](publisher/README.md)
@@ -31,9 +31,11 @@ Below code snnipet signifies the same.
     - Samples/subscriber/cpp/fedora
     - Samples/subscriber/cpp/alpine
 
-    # Python sample apps for ubuntu
+    # Python sample apps for ubuntu and fedora
     - Samples/publisher/python/ubuntu
     - Samples/subscriber/python/ubuntu
+    - Samples/publisher/python/fedora
+    - Samples/subscriber/python/fedora
 
     # Go sample apps for ubuntu, fedora and alpine
     - Samples/publisher/go/ubuntu
