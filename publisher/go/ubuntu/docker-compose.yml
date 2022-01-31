@@ -39,7 +39,7 @@ services:
     container_name: ia_ubuntu_go_sample_pub
     hostname: ia_ubuntu_go_sample_pub
     restart: unless-stopped
-    read_only: false
+    read_only: true
     security_opt:
     - no-new-privileges
     healthcheck:

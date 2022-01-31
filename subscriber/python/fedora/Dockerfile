@@ -59,4 +59,5 @@ RUN useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
 
 USER $EII_USER_NAME
 
+HEALTHCHECK NONE
 ENTRYPOINT ["python3.9", "-u", "main.py"]

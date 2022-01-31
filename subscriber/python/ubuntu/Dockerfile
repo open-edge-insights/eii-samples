@@ -85,5 +85,6 @@ USER $EII_USER_NAME
 
 COPY --from=builder /app/ /app/
 
+HEALTHCHECK NONE
 ENTRYPOINT ["python3", "-u", "main.py"]
 

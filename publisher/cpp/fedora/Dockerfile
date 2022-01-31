@@ -76,4 +76,5 @@ USER $EII_USER_NAME
 
 COPY --from=builder /app/release/run /app/run
 
+HEALTHCHECK NONE
 ENTRYPOINT ["/app/run"]
