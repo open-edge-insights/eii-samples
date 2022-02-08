@@ -68,7 +68,7 @@ int main() {
                 log_level = LOG_LVL_ERROR;
             }
         }
-    } catch(std::exception e){
+    } catch(std::exception e) {
         LOG_ERROR("Error in setting log level %s", e.what());
     }
 

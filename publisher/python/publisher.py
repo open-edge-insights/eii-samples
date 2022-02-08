@@ -26,7 +26,6 @@ import os
 import cfgmgr.config_manager as cfg
 
 
-
 def start_publisher():
     publisher = None
 

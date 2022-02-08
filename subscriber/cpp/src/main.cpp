@@ -68,7 +68,7 @@ int main() {
                 log_level = LOG_LVL_ERROR;
             }
         }
-    } catch(std::exception e){
+    } catch(std::exception e) {
         LOG_ERROR("Error in setting log level %s", e.what());
     }
 
@@ -76,7 +76,7 @@ int main() {
 
     loop = new std::atomic<bool>;
     *loop = true;
-    if ((start_subscriber() == 0) && 
+    if ((start_subscriber() == 0) &&
         (start_client() == 0)) {
         pthread_join(sub_thread, NULL);
         pthread_join(client_thread, NULL);

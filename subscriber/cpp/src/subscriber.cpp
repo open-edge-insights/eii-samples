@@ -49,7 +49,6 @@ Subscriber::~Subscriber() {
 }
 
 bool Subscriber::init() {
-
     int num_of_subscribers = sub_ch->getNumSubscribers();
     if (num_of_subscribers == -1) {
         LOG_ERROR_0("No subscriber instances found, exiting...");
@@ -69,7 +68,8 @@ bool Subscriber::init() {
     }
 
     msgbus_ret_t ret;
-    ret = msgbus_subscriber_new(g_msgbus_ctx, topics[0].c_str(), NULL, &g_sub_ctx);
+    ret = msgbus_subscriber_new(g_msgbus_ctx, topics[0].c_str(),
+                                NULL, &g_sub_ctx);
 
     if (ret != MSG_SUCCESS) {
         LOG_ERROR("Failed to initialize subscriber (errno: %d)", ret);

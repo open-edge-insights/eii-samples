@@ -31,7 +31,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func start_subscriber() {
+func startSubscriber() {
 
 	configmgr, err := eiicfgmgr.ConfigManager()
 	if err != nil {

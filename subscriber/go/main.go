@@ -26,8 +26,8 @@ func main() {
 
 	flag := make(chan bool, 1)
 
-	go start_subscriber()
-	go start_client()
+	go startSubscriber()
+	go startClient()
 
 	<-flag
 }

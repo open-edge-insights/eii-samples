@@ -56,9 +56,9 @@ bool Publisher::init() {
     // PublisherCfg* pub_ctx = pub_ch->getPublisherByName("sample_pub");
     config_t* pub_config = pub_ctx->getMsgBusConfig();
 
-    // get all Publisher Topics 
+    // get all Publisher Topics
     std::vector<std::string> topics = pub_ctx->getTopics();
-    for(int i = 0; i < topics.size(); i++) {
+    for (int i = 0; i < topics.size(); i++) {
         LOG_INFO("Pub Topics : %s", topics[i].c_str());
     }
 

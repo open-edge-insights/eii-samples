@@ -30,7 +30,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func start_server() {
+func startServer() {
 
 	configmgr, err := eiicfgmgr.ConfigManager()
 	if err != nil {

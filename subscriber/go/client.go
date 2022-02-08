@@ -32,7 +32,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func start_client() {
+func startClient() {
 	configmgr, err := eiicfgmgr.ConfigManager()
 	if err != nil {
 		glog.Fatal("Config Manager initialization failed...")

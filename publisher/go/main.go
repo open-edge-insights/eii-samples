@@ -26,8 +26,8 @@ func main() {
 
 	flag := make(chan bool, 1)
 
-	go start_publisher()
-	go start_server()
+	go startPublisher()
+	go startServer()
 
 	<-flag
 }

@@ -32,7 +32,7 @@ import (
 	"github.com/golang/glog"
 )
 
-func start_publisher() {
+func startPublisher() {
 	flag.Parse()
 
 	configmgr, err := eiicfgmgr.ConfigManager()
