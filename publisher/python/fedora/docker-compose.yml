@@ -62,5 +62,6 @@ services:
       - 65118:65118
     volumes:
       - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
-      - ./Certificates/FedoraPythonSamplePub:/run/secrets/FedoraPythonSamplePub
-      - ./Certificates/rootca:/run/secrets/rootca
+      - ./Certificates/FedoraPythonSamplePub:/run/secrets/FedoraPythonSamplePub:ro
+      - ./Certificates/rootca/cacert.pem:/run/secrets/rootca/cacert.pem:ro
+

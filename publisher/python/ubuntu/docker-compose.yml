@@ -62,5 +62,6 @@ services:
       - 65117:65117
     volumes:
       - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
-      - ./Certificates/UbuntuPythonSamplePub:/run/secrets/UbuntuPythonSamplePub
-      - ./Certificates/rootca:/run/secrets/rootca
+      - ./Certificates/UbuntuPythonSamplePub:/run/secrets/UbuntuPythonSamplePub:ro
+      - ./Certificates/rootca/cacert.pem:/run/secrets/rootca/cacert.pem:ro
+

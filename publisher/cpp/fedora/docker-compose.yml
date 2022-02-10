@@ -58,5 +58,6 @@ services:
       - eii
     volumes:
       - "${EII_INSTALL_PATH}/sockets:${SOCKET_DIR}"
-      - ./Certificates/FedoraCppSamplePub:/run/secrets/FedoraCppSamplePub
-      - ./Certificates/rootca:/run/secrets/rootca
+      - ./Certificates/FedoraCppSamplePub:/run/secrets/FedoraCppSamplePub:ro
+      - ./Certificates/rootca/cacert.pem:/run/secrets/rootca/cacert.pem:ro
+
