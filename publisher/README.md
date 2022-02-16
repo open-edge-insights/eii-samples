@@ -1,34 +1,25 @@
-# Sample Publisher App
+# Sample publisher apps
 
-Publisher apps consists of :
-1. cpp publisher
-   - Ubuntu
-   - Alpine
-   - Fedora
-2. go publisher 
-   - Ubuntu
-   - Alpine
-   - Fedora
-3. python publisher
-   - Ubuntu
+Publisher apps consists of the following:
 
-1. **cpp publisher**: 
-CPP publisher and server are supported in ubuntu, alpine and fedora will be running inside independent containers `ia_ubuntu_cpp_sample_pub`, `ia_alpine_cpp_sample_pub`, `ia_fedora_cpp_sample_pub` respectively.
+## C++ publisher
 
-2. **go publisher**: 
-Go publisher and server are supported in ubuntu, alpine and fedora will be running inside independent containers `ia_ubuntu_go_sample_pub`, `ia_alpine_go_sample_pub`, `ia_go_cpp_sample_pub` respectively.
+The C++ publisher and server are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The C++ publisher runs in the independent containers `ia_ubuntu_cpp_sample_pub`, `ia_alpine_cpp_sample_pub`, `ia_fedora_cpp_sample_pub` respectively.
 
-3. **python publisher**: 
-Python publisher and server are supported only in ubuntu will be running inside independent container `ia_ubuntu_python_sample_pub`.
+## Go publisher
 
-**NOTE:** Above publisher containers comprises of both publisher and server functionality.
+The Go publisher and server are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The Go publisher runs in the independent containers `ia_ubuntu_go_sample_pub`, `ia_alpine_go_sample_pub`, and `ia_fedora_go_sample_pub` respectively.
 
-The high level logical flow of Sample Publisher App is as below:
+## Python publisher
 
-   1. Publisher contacts to ETCD service, using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)
-      library. It fetches it's private key and allowed client's public keys. Then it creates
-      the publisher object and starts publishing the sample data at given topic
-      (topic name : publish_test).
+The Python publisher and server are supported only in Ubuntu and Fedora operating systems or docker images. The Python publisher will run in the independent containers `ia_ubuntu_python_sample_pub` and `ia_fedora_python_sample_pub` respectively.
 
-   2. Server contacts to ETCD service, and fetches it's private key and allowed client's public keys.
-      Then it creates a server object according to given service name and waits for the client's request.
+> **Note:** The sample publisher containers comprises of both the publisher and the server functionality.
+
+## High-level logical flow for sample publisher apps
+
+The high-level logical flow of a sample publisher app is as follows:
+
+1. Sample apps use the [ConfigMgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c) APIs to construct the `msgbus` config from the ETCD. It fetches its private key and the allowed client's public keys. Then it creates the publisher object and starts publishing the sample data at a given topic (topic name: publish_test).
+
+2. The server contacts the ETCD service and fetches its private key and the allowed client's public keys. Then it creates a server object according to the given service name and waits for the client's request.

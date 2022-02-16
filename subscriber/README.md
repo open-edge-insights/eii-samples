@@ -1,34 +1,25 @@
-# Sample Subscriber App
+# Sample subscriber apps
 
-Subscriber apps consists of :
-1. cpp subscriber
-   - Ubuntu
-   - Alpine
-   - Fedora
-2. go subscriber 
-   - Ubuntu
-   - Alpine
-   - Fedora
-3. python subscriber
-   - Ubuntu
+Subscriber apps consists of the following:
 
-1. **cpp subscriber**: 
-CPP subscriber and client are supported in ubuntu, alpine and fedora will be running inside independent containers `ia_ubuntu_cpp_sample_sub`, `ia_alpine_cpp_sample_sub`, `ia_fedora_cpp_sample_sub` respectively.
+## C++ subscriber
 
-2. **go subscriber**: 
-Go subscriber and client are supported in ubuntu, alpine and fedora will be running inside independent containers `ia_ubuntu_go_sample_sub`, `ia_alpine_go_sample_sub`, `ia_go_cpp_sample_sub` respectively.
+The C++ subscriber and client are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The C++ subscriber runs in the independent containers `ia_ubuntu_cpp_sample_sub`, `ia_alpine_cpp_sample_sub`, and `ia_fedora_cpp_sample_sub` respectively.
 
-3. **python subscriber**: 
-Python subscriber and client are supported only in ubuntu will be running inside independent container `ia_ubuntu_python_sample_sub`.
+## Go subscriber
 
-**NOTE:** Above subscriber containers comprises of both subscriber and client functionality.
+The Go subscriber and client are supported in Ubuntu, Alpine, and Fedora operating systems or docker images.  The Go subscriber runs in the independent containers `ia_ubuntu_go_sample_sub`, `ia_alpine_go_sample_sub`, and `ia_fedora_go_sample_sub` respectively.
 
-The high level logical flow of Sample App is as below:
+## Python subscriber
 
-   1. Subscriber contacts to ETCD service using the [cfgmgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c)
-      library. It fetches it's private and public key and public key of publisher. It then creates
-      the subscriber object (which subscribes to the same topic : publish_test) and start receiving
-      the data and prints the same onto a console.
+The Python subscriber and client are supported are supported only in Ubuntu and Fedora operating systems or docker images. The Python subscriber runs in the independent container `ia_ubuntu_python_sample_sub` and `ia_fedora_python_sample_sub` respectively.
 
-   2. Client contacts to ETCD service, and fetches its private key and public key of server. Then
-      it creates a client object and sends a request to the server and gets the response back.
+> **Note:** The subscriber containers comprises of both the subscriber and the client functionality.
+
+## High-level logical flow for sample subscriber apps
+
+The high-level logical flow of a sample subscriber app is as below:
+
+1. Sample apps use the [ConfigMgr](https://github.com/open-edge-insights/eii-core/blob/master/common/libs/ConfigMgr/src/cfgmgr.c) APIs to construct the `msgbus` config from the ETCD. It fetches its private and public key and the publisher's public key. It then creates the subscriber object (which subscribes to the same topic : publish_test) and start receiving the data and prints the same onto a console.
+
+2. Client contacts the ETCD service and fetches its private key and the server's public key. Then it creates a client object and sends a request to the server and receives the response back.

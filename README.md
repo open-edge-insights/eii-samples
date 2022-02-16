@@ -1,29 +1,27 @@
-# EII Sample Apps
+# Sample apps
 
-EII Sample Apps demonstrates the usage of core libraries packages like Utils, EIIMessageBus and ConfigManager in different flavors of Linux, i.e., Ubuntu, Alpine and Fedora in cpp, go and python.
+This section provides more information about the Open Edge Insights (OEI) sample apps and how to use the core libraries packages like Utils, Message Bus, and ConfigManager in various flavors of Linux such as Ubuntu, Alpine, and Fedora operating systems or docker images for programming languages such as C++, Go, and Python.
 
-Below table shows the support of sample apps on different flavors of linux on different programming languages
+The following table shows the details for the supported flavors of Linux operating systems or docker images and programming languages that support sample apps:
 
 | Linux Flavor | Language         |
 | :----------: | :--------------: |
-| `Ubuntu`     | `CPP, GO, PYTHON`|
-| `Alpine`     | `CPP, GO`        |
-| `Fedora`     | `CPP, GO, PYTHON`|
+| `Ubuntu`     | `C++, Go, Python`|
+| `Alpine`     | `C++, Go`        |
+| `Fedora`     | `C++, Go, Python`|
 
-These Sample Apps are segregated into publisher and subscriber and below are its respective README.md:
-1. [publisher](publisher/README.md)
-2. [subscriber](subscriber/README.md)
+The sample apps are classified as `publisher` and `subscriber` apps. For more information, refer to the following:
 
-## Steps to run EII samples apps
+- [Publisher](publisher/README.md)
+- [Subscriber](subscriber/README.md)
 
-Please find the ordered steps for running Sample Apps.
+## Run the samples apps
 
-1. As per EII default scenario, the sample custom UDF containers are not mandatory containers to run, hence the builder.py should run `sample-apps.yml` present in the [build/usecases](https://github.com/open-edge-insights/eii-core/blob/master/build/usecases) directory. All the sample apps containers are added in this example. 
-Below code snnipet signifies the same. 
+For default scenario, the sample custom UDF containers are not the mandatory containers to run. The `builder.py` script runs the `sample-apps.yml` from the [build/usecases](https://github.com/open-edge-insights/eii-core/blob/master/build/usecases) directory and adds all the sample apps containers. Refer to the following list to view the details of the sample apps containers:
 
 ```yml
     AppContexts:
-    # CPP sample apps for ubuntu, fedora and alpine
+    # CPP sample apps for Ubuntu, Fedora, and Alpine operating systems or docker images
     - Samples/publisher/cpp/ubuntu
     - Samples/publisher/cpp/fedora
     - Samples/publisher/cpp/alpine
@@ -31,13 +29,13 @@ Below code snnipet signifies the same.
     - Samples/subscriber/cpp/fedora
     - Samples/subscriber/cpp/alpine
 
-    # Python sample apps for ubuntu and fedora
+    # Python sample apps for Ubuntu and Fedora operating systems or docker images
     - Samples/publisher/python/ubuntu
     - Samples/subscriber/python/ubuntu
     - Samples/publisher/python/fedora
     - Samples/subscriber/python/fedora
 
-    # Go sample apps for ubuntu, fedora and alpine
+    # Go sample apps for Ubuntu, Fedora, and Alpine operating systems or docker images
     - Samples/publisher/go/ubuntu
     - Samples/publisher/go/fedora
     - Samples/publisher/go/alpine
@@ -46,11 +44,11 @@ Below code snnipet signifies the same.
     - Samples/subscriber/go/alpine
 ```
 
-2. With the above pre-requisite done, please run the below command:
+1. To run the `sample-apps.yml` file, run the following command:
 
     ```sh
     cd [WORKDIR]/IEdgeInsights/build
     python3 builder.py -f ./usecases/sample-apps.yml file used>
     ```
 
-3. Refer [README.md](https://github.com/open-edge-insights/eii-core/blob/master/README.md) to build and run the Sample Apps
+2. Refer to the [`Build OEI stack`](https://github.com/open-edge-insights/eii-core/blob/master/README.md) and the [`Run OEI service`](https://github.com/open-edge-insights/eii-core/blob/master/README.md) sections to build and run the sample apps.
