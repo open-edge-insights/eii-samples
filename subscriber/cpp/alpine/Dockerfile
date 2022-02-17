@@ -27,13 +27,13 @@ WORKDIR /app
 RUN apk add cmake make gcc g++ cjson-dev wget
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/apks/eii-utils-2.6.0-r0.apk && \
-    wget ${PKG_SRC}/apks/eii-messagebus-2.6.0-r0.apk && \
-    wget ${PKG_SRC}/apks/eii-configmanager-2.6.0-r0.apk
+RUN wget ${PKG_SRC}/apks/eii-utils-3.0.0-r0.apk && \
+    wget ${PKG_SRC}/apks/eii-messagebus-3.0.0-r0.apk && \
+    wget ${PKG_SRC}/apks/eii-configmanager-3.0.0-r0.apk
 
-RUN apk add --allow-untrusted /app/eii-utils-2.6.0-r0.apk && \
-    apk add --allow-untrusted /app/eii-messagebus-2.6.0-r0.apk && \
-    apk add --allow-untrusted /app/eii-configmanager-2.6.0-r0.apk
+RUN apk add --allow-untrusted /app/eii-utils-3.0.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-messagebus-3.0.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-configmanager-3.0.0-r0.apk
 
 # Build the application
 ARG CMAKE_BUILD_TYPE=Release
@@ -52,9 +52,9 @@ ARG EII_USER_NAME
 RUN adduser -u ${EII_UID} -D -h /home/${EII_USER_NAME} ${EII_USER_NAME}
 
 COPY --from=builder /app/*.apk /app/
-RUN apk add --allow-untrusted /app/eii-utils-2.6.0-r0.apk && \
-    apk add --allow-untrusted /app/eii-messagebus-2.6.0-r0.apk && \
-    apk add --allow-untrusted /app/eii-configmanager-2.6.0-r0.apk
+RUN apk add --allow-untrusted /app/eii-utils-3.0.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-messagebus-3.0.0-r0.apk && \
+    apk add --allow-untrusted /app/eii-configmanager-3.0.0-r0.apk
 
 USER $EII_USER_NAME
 

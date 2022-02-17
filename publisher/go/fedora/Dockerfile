@@ -39,13 +39,13 @@ RUN dnf install -y cjson-devel zeromq zlib-devel wget pkg-config
 WORKDIR /app
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/rpms/eii-utils-2.6.0-Linux.rpm && \
-    wget ${PKG_SRC}/rpms/eii-messagebus-2.6.0-Linux.rpm && \
-    wget ${PKG_SRC}/rpms/eii-configmanager-2.6.0-Linux.rpm
+RUN wget ${PKG_SRC}/rpms/eii-utils-3.0.0-Linux.rpm && \
+    wget ${PKG_SRC}/rpms/eii-messagebus-3.0.0-Linux.rpm && \
+    wget ${PKG_SRC}/rpms/eii-configmanager-3.0.0-Linux.rpm
 
-RUN rpm -i /app/eii-utils-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-messagebus-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-configmanager-2.6.0-Linux.rpm
+RUN rpm -i /app/eii-utils-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-messagebus-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-configmanager-3.0.0-Linux.rpm
 
 RUN ldd /usr/lib/libeiimsgbus.so
 
@@ -90,9 +90,9 @@ RUN useradd -r -u $EII_UID -g $EII_USER_NAME $EII_USER_NAME
 
 COPY --from=builder /app/*.rpm /app/
 
-RUN rpm -i /app/eii-utils-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-messagebus-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-configmanager-2.6.0-Linux.rpm
+RUN rpm -i /app/eii-utils-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-messagebus-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-configmanager-3.0.0-Linux.rpm
 
 COPY --from=builder /app/* /app/
 USER $EII_USER_NAME

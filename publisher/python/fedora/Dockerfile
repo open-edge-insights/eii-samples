@@ -30,14 +30,14 @@ RUN dnf install -y cjson zeromq zlib wget python3.9-pip && \
     python3.9 -m pip list
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/rpms/eii-utils-2.6.0-Linux.rpm && \
-    wget ${PKG_SRC}/rpms/eii-messagebus-2.6.0-Linux.rpm && \
-    wget ${PKG_SRC}/rpms/eii-configmanager-2.6.0-Linux.rpm
+RUN wget ${PKG_SRC}/rpms/eii-utils-3.0.0-Linux.rpm && \
+    wget ${PKG_SRC}/rpms/eii-messagebus-3.0.0-Linux.rpm && \
+    wget ${PKG_SRC}/rpms/eii-configmanager-3.0.0-Linux.rpm
 
 # Installation of eiimessagebus and configmgr whl packages
-RUN rpm -i /app/eii-utils-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-messagebus-2.6.0-Linux.rpm && \
-    rpm --force -i /app/eii-configmanager-2.6.0-Linux.rpm
+RUN rpm -i /app/eii-utils-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-messagebus-3.0.0-Linux.rpm && \
+    rpm --force -i /app/eii-configmanager-3.0.0-Linux.rpm
 
 ARG PYPI_SRC
 ARG MSGBUS_WHL

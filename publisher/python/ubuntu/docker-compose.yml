@@ -33,8 +33,8 @@ services:
         no_proxy: ${ETCD_HOST},.intel.com
         PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
         PYPI_SRC: sagartp-H370M-D3H.iind.intel.com:7800/whls
-        MSGBUS_WHL: eii_msgbus-2.6-cp38-cp38-manylinux2014_x86_64.whl
-        CFGMGR_WHL: eii_configmgr-2.6-cp38-cp38-manylinux2014_x86_64.whl
+        MSGBUS_WHL: eii_msgbus-3.0-cp38-cp38-manylinux2014_x86_64.whl
+        CFGMGR_WHL: eii_configmgr-3.0-cp38-cp38-manylinux2014_x86_64.whl
         SOCK_DIR: ${SOCKET_DIR}
     image: ${DOCKER_REGISTRY}ia_ubuntu_python_sample_pub:${EII_VERSION}
     container_name: ia_ubuntu_python_sample_pub

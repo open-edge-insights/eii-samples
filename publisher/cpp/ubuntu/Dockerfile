@@ -33,13 +33,13 @@ RUN apt update && apt install -y build-essential \
 WORKDIR /app
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/debs/eii-utils-2.6.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-messagebus-2.6.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-configmanager-2.6.0-Linux.deb
+RUN wget ${PKG_SRC}/debs/eii-utils-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/debs/eii-messagebus-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/debs/eii-configmanager-3.0.0-Linux.deb
 
-RUN dpkg -i /app/eii-utils-2.6.0-Linux.deb && \
-    dpkg -i /app/eii-messagebus-2.6.0-Linux.deb && \
-    dpkg -i /app/eii-configmanager-2.6.0-Linux.deb
+RUN dpkg -i /app/eii-utils-3.0.0-Linux.deb && \
+    dpkg -i /app/eii-messagebus-3.0.0-Linux.deb && \
+    dpkg -i /app/eii-configmanager-3.0.0-Linux.deb
 
 COPY ./publisher/cpp/ /app/
 RUN mkdir release/
@@ -62,9 +62,9 @@ RUN apt update && apt install -y build-essential \
 WORKDIR /app
 COPY --from=builder /app/*.deb /app/
 
-RUN dpkg -i /app/eii-utils-2.6.0-Linux.deb && \
-    dpkg -i /app/eii-messagebus-2.6.0-Linux.deb && \
-    dpkg -i /app/eii-configmanager-2.6.0-Linux.deb
+RUN dpkg -i /app/eii-utils-3.0.0-Linux.deb && \
+    dpkg -i /app/eii-messagebus-3.0.0-Linux.deb && \
+    dpkg -i /app/eii-configmanager-3.0.0-Linux.deb
 
 ARG EII_UID
 ARG EII_USER_NAME
