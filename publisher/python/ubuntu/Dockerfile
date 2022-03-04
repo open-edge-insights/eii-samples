@@ -24,7 +24,32 @@ FROM ubuntu:${UBUNTU_IMAGE_VERSION} as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt update && apt install -y build-essential \
+    cmake \
+    wget
+
 WORKDIR /app
+
+# Install libzmq
+RUN rm -rf deps && \
+    mkdir -p deps && \
+    cd deps && \
+    wget -q --show-progress https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz -O zeromq.tar.gz && \
+    tar xf zeromq.tar.gz && \
+    cd zeromq-4.3.4 && \
+    ./configure --prefix=/usr && \
+    make install
+
+# Install cjson
+RUN rm -rf deps && \
+    mkdir -p deps && \
+    cd deps && \
+    wget -q --show-progress https://github.com/DaveGamble/cJSON/archive/v1.7.12.tar.gz -O cjson.tar.gz && \
+    tar xf cjson.tar.gz && \
+    cd cJSON-1.7.12 && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_INSTALL_INCLUDEDIR=/usr/include -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make install
 
 COPY ./publisher/python/*.py /app/
 
@@ -33,12 +58,7 @@ FROM ubuntu:${UBUNTU_IMAGE_VERSION} as runtime
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
-    apt install -y build-essential \
-    cmake \
-    libcjson-dev \
-    libzmq5 \
-    zlib1g \
-    wget
+    apt install -y  wget
 
 ARG PYTHON_VERSION
 RUN apt-get install -y --no-install-recommends python${PYTHON_VERSION} \
@@ -83,6 +103,8 @@ RUN groupadd $EII_USER_NAME -g $EII_UID && \
 USER $EII_USER_NAME
 
 COPY --from=builder /app/ /app/
+COPY --from=builder /usr/lib /usr/lib
+COPY --from=builder /usr/include /usr/include
 
 HEALTHCHECK NONE
 ENTRYPOINT ["python3", "-u", "main.py"]

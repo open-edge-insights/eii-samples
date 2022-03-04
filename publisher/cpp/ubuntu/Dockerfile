@@ -25,12 +25,29 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y build-essential \
     cmake \
-    libcjson-dev \
-    libzmq5 \
-    zlib1g-dev \
     wget
 
 WORKDIR /app
+
+RUN rm -rf deps && \
+    mkdir -p deps && \
+    cd deps && \
+    wget -q --show-progress https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.tar.gz -O zeromq.tar.gz && \
+    tar xf zeromq.tar.gz && \
+    cd zeromq-4.3.4 && \
+    ./configure --prefix=/usr && \
+    make install
+
+# Install cjson
+RUN rm -rf deps && \
+    mkdir -p deps && \
+    cd deps && \
+    wget -q --show-progress https://github.com/DaveGamble/cJSON/archive/v1.7.12.tar.gz -O cjson.tar.gz && \
+    tar xf cjson.tar.gz && \
+    cd cJSON-1.7.12 && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_INSTALL_INCLUDEDIR=/usr/include -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    make install
 
 ARG PKG_SRC
 RUN wget ${PKG_SRC}/debs/eii-utils-3.0.0-Linux.deb && \
@@ -53,14 +70,11 @@ FROM ubuntu:${UBUNTU_IMAGE_VERSION} as runtime
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && apt install -y build-essential \
-    cmake \
-    libcjson1 \
-    libzmq5 \
-    zlib1g
-
 WORKDIR /app
+
 COPY --from=builder /app/*.deb /app/
+COPY --from=builder /usr/lib /usr/lib
+COPY --from=builder /usr/include /usr/include
 
 RUN dpkg -i /app/eii-utils-3.0.0-Linux.deb && \
     dpkg -i /app/eii-messagebus-3.0.0-Linux.deb && \
