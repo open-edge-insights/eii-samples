@@ -96,6 +96,8 @@ RUN if [ -z $PYPI_SRC ] ; then \
         pip3 install ${CFGMGR_WHL} ; \
     fi
 
+RUN apt-get remove --auto-remove --purge -y python3-pip
+
 ARG EII_UID
 ARG EII_USER_NAME
 RUN groupadd $EII_USER_NAME -g $EII_UID && \
