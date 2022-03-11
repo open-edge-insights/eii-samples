@@ -42,9 +42,10 @@ RUN rpm -i /app/eii-utils-3.0.0-Linux.rpm && \
 ARG PYPI_SRC
 ARG MSGBUS_WHL
 ARG CFGMGR_WHL
+
+COPY ./publisher/python/requirements.txt /app/
 RUN if [ -z $PYPI_SRC ] ; then \
-        pip3 install eii-msgbus && \
-        pip3 install eii-configmgr; \
+        pip3 install -r requirements.txt; \
     else \
         wget ${PYPI_SRC}/${MSGBUS_WHL} && \
         wget ${PYPI_SRC}/${CFGMGR_WHL} && \

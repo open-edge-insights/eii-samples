@@ -32,7 +32,10 @@ services:
         FEDORA_IMAGE_VERSION: 34
         no_proxy: ${ETCD_HOST},.intel.com
         PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
-        PYPI_SRC: sagartp-H370M-D3H.iind.intel.com:7800/whls
+
+        # One can give url of the python package to download and install
+        # By default python packages are installed from pypi.org - pip install
+        PYPI_SRC: 
         MSGBUS_WHL: eii_msgbus-3.0-cp39-cp39-manylinux2014_x86_64.whl
         CFGMGR_WHL: eii_configmgr-3.0-cp39-cp39-manylinux2014_x86_64.whl
         SOCK_DIR: ${SOCKET_DIR}

@@ -86,9 +86,9 @@ ARG MSGBUS_WHL
 ARG CFGMGR_WHL
 
 # Installation of eiimessagebus and configmgr whl packages
+COPY ./publisher/python/requirements.txt /app/
 RUN if [ -z $PYPI_SRC ] ; then \
-        pip3 install eii-msgbus && \
-        pip3 install eii-configmgr; \
+        pip3 install -r requirements.txt; \
     else \
         wget ${PYPI_SRC}/${MSGBUS_WHL} && \
         wget ${PYPI_SRC}/${CFGMGR_WHL} && \
