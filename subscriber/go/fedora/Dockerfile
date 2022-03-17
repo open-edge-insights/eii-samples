@@ -58,7 +58,7 @@ RUN tar xvzf eii-messagebus-go.tar.gz && \
 RUN dnf -y update && \
     dnf -y install go
 
-ENV CGO_CFLAGS="$CGO_FLAGS -O2 -D_FORTIFY_SOURCE=2 -fstack-protector-strong -fPIC" \
+ENV CGO_CFLAGS="$CGO_FLAGS -O2 -D_FORTIFY_SOURCE=2 -fstack-protector-strong -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fPIC" \
     CGO_LDFLAGS="$CGO_LDFLAGS -z noexecstack -z relro -z now"
 
 ENV PATH="$PATH:/usr/local/go/bin" \
@@ -66,7 +66,7 @@ ENV PATH="$PATH:/usr/local/go/bin" \
     LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${CMAKE_INSTALL_PREFIX}/lib"
 
 # These flags are needed for enabling security while compiling and linking with cpuidcheck in golang
-ENV CGO_CFLAGS="$CGO_FLAGS -I ${CMAKE_INSTALL_PREFIX}/include -O2 -D_FORTIFY_SOURCE=2 -fstack-protector-strong -fPIC" \
+ENV CGO_CFLAGS="$CGO_FLAGS -I ${CMAKE_INSTALL_PREFIX}/include -O2 -D_FORTIFY_SOURCE=2 -fstack-protector-strong -fno-strict-overflow -fno-delete-null-pointer-checks -fwrapv -fPIC" \
     CGO_LDFLAGS="$CGO_LDFLAGS -L${CMAKE_INSTALL_PREFIX}/lib -z noexecstack -z relro -z now"
 
 COPY ./subscriber/go/ ./
