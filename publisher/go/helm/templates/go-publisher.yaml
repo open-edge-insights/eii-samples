@@ -1,0 +1,129 @@
+# Copyright (c) 2021 Intel Corporation.
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.config.gopublisher.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+  - port: {{ .Values.config.gopublisher.publish_port }}
+    name: publisher-port
+  - port: {{ .Values.config.gopublisher.server_port }}
+    name: server-port
+  selector:
+    app: gopublisher
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gopublisher
+  name: deployment-go-publisher
+  namespace: {{ .Values.namespace }}
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gopublisher
+  template:
+    metadata:
+      labels:
+        app: gopublisher
+    spec:
+      {{- if and .Values.DOCKER_USERNAME .Values.DOCKER_PASSWORD }}
+      imagePullSecrets:
+      - name: registryauth
+      {{- end }}
+      containers:
+      - name: ia-go-publisher
+        image: {{ .Values.DOCKER_REGISTRY }}ia_go_publisher:{{ .Values.EII_VERSION }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        {{- if eq .Values.config.gopublisher.IPC true}}
+        - name: {{ .Values.volumes.eii_socket.name }}
+          mountPath: {{ .Values.volumes.eii_socket.location }}
+        {{- end }}
+        {{ if eq .Values.env.DEV_MODE false}}
+        - name: etcd-certs
+          mountPath: /run/secrets/etcd/
+        {{ end }}
+
+        env:
+        - name: AppName
+          value: "GoPublisher"
+        - name: DEV_MODE
+          value: '{{ .Values.env.DEV_MODE }}'
+        - name: ETCD_HOST
+          value: {{ .Values.config.etcd.name }}
+        - name: ETCD_CLIENT_PORT
+          value: '{{ .Values.config.etcd.client_port }}'
+        - name:  ETCD_PREFIX
+          value: ''
+        {{- if eq .Values.config.gopublisher.IPC false}}
+        - name: PUBLISHER_sample_pub_TYPE
+          value: "zmq_tcp"
+        - name: PUBLISHER_sample_pub_ENDPOINT
+          value: "0.0.0.0:{{ .Values.config.gopublisher.publish_port }}"
+        - name: SERVER_echo_service_TYPE
+          value: "zmq_tcp"
+        - name: SERVER_echo_service_ENDPOINT
+          value: "0.0.0.0:{{ .Values.config.gopublisher.server_port }}"
+        {{- else }}
+        - name: PUBLISHER_sample_pub_TYPE
+          value: "zmq_ipc"
+        - name: PUBLISHER_sample_pub_ENDPOINT
+          value: "{{ .Values.env.SOCKET_DIR }}"
+        - name: SERVER_echo_service_TYPE
+          value: "zmq_ipc"
+        - name: SERVER_echo_service_ENDPOINT
+          value: "{{ .Values.env.SOCKET_DIR }}"
+        {{- end }}
+        {{ if eq .Values.env.DEV_MODE false}}
+        - name: CONFIGMGR_CACERT
+          value: "/run/secrets/etcd/cacert.pem"
+        - name: CONFIGMGR_CERT
+          value: "/run/secrets/etcd/GoPublisher_client_certificate.pem"
+        - name: CONFIGMGR_KEY
+          value: "/run/secrets/etcd/GoPublisher_client_key.pem"
+        {{ end }}
+
+      volumes:
+      {{- if eq .Values.config.gopublisher.IPC true}}
+      - name: {{ .Values.volumes.eii_socket.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.volumes.eii_socket.name }}
+      {{- end }}
+      {{ if eq .Values.env.DEV_MODE false}}
+      - name: etcd-certs
+        secret:
+          secretName: eii-certs
+          items:
+          - key: cacert.pem
+            path: cacert.pem
+          - key: GoPublisher_client_certificate.pem
+            path: GoPublisher_client_certificate.pem
+          - key: GoPublisher_client_key.pem
+            path: GoPublisher_client_key.pem
+      {{ end }}

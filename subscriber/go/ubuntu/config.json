@@ -1,0 +1,29 @@
+{
+    "config" : {
+        "cert_type": ["zmq", "pem"],
+        "loop_interval": 1
+    },
+
+    "interfaces" : {
+   
+        "Subscribers": [
+            {
+                "Name": "sample_sub",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_ubuntu_go_sample_pub:60081",
+                "PublisherAppName": "UbuntuGoSamplePub",
+                "Topics": [
+                    "publish_test"
+                ]
+            }
+        ],
+        "Clients": [
+            {
+                "Name": "sample_client",
+                "ServerAppName": "UbuntuGoSamplePub",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_ubuntu_go_sample_pub:60071"
+            }
+        ]
+    }
+}

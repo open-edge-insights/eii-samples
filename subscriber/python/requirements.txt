@@ -1,0 +1,2 @@
+eii-msgbus==3.0
+eii-configmgr==3.0

@@ -1,0 +1,27 @@
+{
+    "config":{
+        "cert_type": ["zmq", "pem"],
+        "loop_interval": "1"
+    },
+    "interfaces":{
+        "Clients": [
+            {
+                "Name": "default",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_ubuntu_python_sample_pub:65117",
+                "ServerAppName": "UbuntuPythonSamplePub"
+            }
+        ],
+        "Subscribers": [
+            {
+                "Name": "default",
+                "Type": "zmq_tcp",
+                "EndPoint": "ia_ubuntu_python_sample_pub:65020",
+                "PublisherAppName": "UbuntuPythonSamplePub",
+                "Topics": [
+                    "camera1_stream_results"
+                ]
+            }
+        ]
+    }
+}

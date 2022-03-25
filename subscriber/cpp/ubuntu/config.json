@@ -1,0 +1,30 @@
+{
+    "config" : {
+        "cert_type": ["zmq", "pem"],
+        "loop_interval": 1
+    },
+
+    "interfaces" : {
+        "Subscribers": [
+            {
+                "EndPoint": "ia_ubuntu_cpp_sample_pub:60088",
+                "Name": "default",
+                "PublisherAppName": "UbuntuCppSamplePub",
+                "Topics": [
+                    "publish_test"
+                ],
+                "Type": "zmq_tcp"
+            }
+        ],
+        "Clients": [
+                {
+                    "Name": "default",
+                    "ServerAppName": "UbuntuCppSamplePub",
+                    "Type": "zmq_tcp",
+                    "EndPoint": "ia_ubuntu_cpp_sample_pub:60080"
+                }
+            ]
+    }
+}
+
+
