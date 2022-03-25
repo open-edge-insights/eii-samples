@@ -36,6 +36,8 @@ services:
         # One can give url of the python package to download and install
         # By default python packages are installed from pypi.org - pip install
         PYPI_SRC: 
+
+        # based on the whl packages generated in the PYPI_SRC, update the MSGBUS_WHL and CFGMGR_WHL
         MSGBUS_WHL: eii_msgbus-3.0-cp38-cp38-manylinux2014_x86_64.whl
         CFGMGR_WHL: eii_configmgr-3.0-cp38-cp38-manylinux2014_x86_64.whl
         SOCK_DIR: ${SOCKET_DIR}
