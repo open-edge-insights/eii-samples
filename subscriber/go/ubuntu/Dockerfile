@@ -60,19 +60,13 @@ RUN rm -rf deps && \
     make install
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/debs/eii-utils-3.0.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-messagebus-3.0.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-configmanager-3.0.0-Linux.deb
+RUN wget ${PKG_SRC}/eii-utils-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/eii-messagebus-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/eii-configmanager-3.0.0-Linux.deb
 
 RUN dpkg -i /app/eii-utils-3.0.0-Linux.deb && \
     dpkg -i /app/eii-messagebus-3.0.0-Linux.deb && \
     dpkg -i /app/eii-configmanager-3.0.0-Linux.deb
-
-RUN wget ${PKG_SRC}/gomod/eii-messagebus-go.tar.gz && \
-    wget ${PKG_SRC}/gomod/eii-configmgr-go.tar.gz
-
-RUN tar xvzf eii-messagebus-go.tar.gz && \
-    tar xvzf eii-configmgr-go.tar.gz
 
 ARG GO_VERSION
 RUN wget -q --show-progress https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz && \

@@ -31,7 +31,7 @@ services:
         EII_USER_NAME: ${EII_USER_NAME}
         GO_VERSION: 1.16
         CMAKE_INSTALL_PREFIX: ${EII_INSTALL_PATH}
-        PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
+        PKG_SRC: https://github.com/open-edge-insights/eii-manifests/releases/download/v3.0
         no_proxy: ${ETCD_HOST},.intel.com
     image: ${DOCKER_REGISTRY}ia_alpine_go_sample_sub:${EII_VERSION}
     container_name: ia_alpine_go_sample_sub 

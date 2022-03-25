@@ -31,7 +31,7 @@ services:
         EII_USER_NAME: ${EII_USER_NAME}
         UBUNTU_IMAGE_VERSION: ${UBUNTU_IMAGE_VERSION}
         no_proxy: ${ETCD_HOST},.intel.com
-        PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
+        PKG_SRC: https://github.com/open-edge-insights/eii-manifests/releases/download/v3.0
 
         # One can give url of the python package to download and install
         # By default python packages are installed from pypi.org - pip install

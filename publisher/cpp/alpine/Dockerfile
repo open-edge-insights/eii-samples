@@ -27,9 +27,9 @@ WORKDIR /app
 RUN apk add cmake make gcc g++ cjson-dev wget
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/apks/eii-utils-3.0.0-r0.apk && \
-    wget ${PKG_SRC}/apks/eii-messagebus-3.0.0-r0.apk && \
-    wget ${PKG_SRC}/apks/eii-configmanager-3.0.0-r0.apk
+RUN wget ${PKG_SRC}/eii-utils-3.0.0-r0.apk && \
+    wget ${PKG_SRC}/eii-messagebus-3.0.0-r0.apk && \
+    wget ${PKG_SRC}/eii-configmanager-3.0.0-r0.apk
 
 RUN apk add --allow-untrusted /app/eii-utils-3.0.0-r0.apk && \
     apk add --allow-untrusted /app/eii-messagebus-3.0.0-r0.apk && \

@@ -70,9 +70,9 @@ RUN apt-get install -y --no-install-recommends python${PYTHON_VERSION} \
 WORKDIR /app
 
 ARG PKG_SRC
-RUN wget ${PKG_SRC}/debs/eii-utils-3.0.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-messagebus-3.0.0-Linux.deb && \
-    wget ${PKG_SRC}/debs/eii-configmanager-3.0.0-Linux.deb
+RUN wget ${PKG_SRC}/eii-utils-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/eii-messagebus-3.0.0-Linux.deb && \
+    wget ${PKG_SRC}/eii-configmanager-3.0.0-Linux.deb
 
 # Installation of utils, eiimessagebus and configmgr debian packages
 RUN dpkg -i /app/eii-utils-3.0.0-Linux.deb && \

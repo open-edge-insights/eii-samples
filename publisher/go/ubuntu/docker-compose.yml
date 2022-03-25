@@ -32,7 +32,7 @@ services:
         EII_USER_NAME: ${EII_USER_NAME}
         UBUNTU_IMAGE_VERSION: ${UBUNTU_IMAGE_VERSION}
         CMAKE_INSTALL_PREFIX: ${EII_INSTALL_PATH}
-        PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
+        PKG_SRC: https://github.com/open-edge-insights/eii-manifests/releases/download/v3.0
         GO_VERSION: ${GO_VERSION}
         no_proxy: ${ETCD_HOST},.intel.com
     image: ${DOCKER_REGISTRY}ia_ubuntu_go_sample_pub:${EII_VERSION}

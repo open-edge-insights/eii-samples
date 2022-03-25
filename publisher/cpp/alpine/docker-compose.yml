@@ -31,7 +31,7 @@ services:
         EII_USER_NAME: ${EII_USER_NAME}
         ALPINE_IMAGE_VERSION: 3.14
         no_proxy: ${ETCD_HOST},.intel.com
-        PKG_SRC: sagartp-H370M-D3H.iind.intel.com:7800
+        PKG_SRC: https://github.com/open-edge-insights/eii-manifests/releases/download/v3.0
         SOCK_DIR: ${SOCKET_DIR}
         # set CMAKE_BUILD_TYPE value to "Debug" to generate debug symbols
         CMAKE_BUILD_TYPE: "Release"
