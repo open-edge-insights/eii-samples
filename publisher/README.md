@@ -4,15 +4,15 @@ Publisher apps consists of the following:
 
 ## C++ publisher
 
-The C++ publisher and server are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The C++ publisher runs in the independent containers `ia_ubuntu_cpp_sample_pub`, `ia_alpine_cpp_sample_pub`, `ia_fedora_cpp_sample_pub` respectively.
+The C++ publisher and server are supported in Ubuntu and Alpine operating systems or docker images. The C++ publisher runs in the independent containers `ia_ubuntu_cpp_sample_pub` and `ia_alpine_cpp_sample_pub` respectively.
 
 ## Go publisher
 
-The Go publisher and server are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The Go publisher runs in the independent containers `ia_ubuntu_go_sample_pub`, `ia_alpine_go_sample_pub`, and `ia_fedora_go_sample_pub` respectively.
+The Go publisher and server are supported in Ubuntu and Alpine operating systems or docker images. The Go publisher runs in the independent containers `ia_ubuntu_go_sample_pub` and `ia_alpine_go_sample_pub` respectively.
 
 ## Python publisher
 
-The Python publisher and server are supported only in Ubuntu and Fedora operating systems or docker images. The Python publisher will run in the independent containers `ia_ubuntu_python_sample_pub` and `ia_fedora_python_sample_pub` respectively.
+The Python publisher and server are supported only in Ubuntu operating systems or docker images. The Python publisher will run in the independent containers `ia_ubuntu_python_sample_pub`.
 
 > **Note:** The sample publisher containers comprises of both the publisher and the server functionality.
 

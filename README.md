@@ -1,6 +1,6 @@
 # Sample apps
 
-This section provides more information about the Open Edge Insights (OEI) sample apps and how to use the core libraries packages like Utils, Message Bus, and ConfigManager in various flavors of Linux such as Ubuntu, Alpine, and Fedora operating systems or docker images for programming languages such as C++, Go, and Python.
+This section provides more information about the Open Edge Insights (OEI) sample apps and how to use the core libraries packages like Utils, Message Bus, and ConfigManager in various flavors of Linux such as Ubuntu and Alpine operating systems or docker images for programming languages such as C++, Go, and Python.
 
 The following table shows the details for the supported flavors of Linux operating systems or docker images and programming languages that support sample apps:
 
@@ -8,7 +8,6 @@ The following table shows the details for the supported flavors of Linux operati
 | :----------: | :--------------: |
 | `Ubuntu`     | `C++, Go, Python`|
 | `Alpine`     | `C++, Go`        |
-| `Fedora`     | `C++, Go, Python`|
 
 The sample apps are classified as `publisher` and `subscriber` apps. For more information, refer to the following:
 
@@ -21,26 +20,20 @@ For default scenario, the sample custom UDF containers are not the mandatory con
 
 ```yml
     AppContexts:
-    # CPP sample apps for Ubuntu, Fedora, and Alpine operating systems or docker images
+    # CPP sample apps for Ubuntu and Alpine operating systems or docker images
     - Samples/publisher/cpp/ubuntu
-    - Samples/publisher/cpp/fedora
     - Samples/publisher/cpp/alpine
     - Samples/subscriber/cpp/ubuntu
-    - Samples/subscriber/cpp/fedora
     - Samples/subscriber/cpp/alpine
 
-    # Python sample apps for Ubuntu and Fedora operating systems or docker images
+    # Python sample apps for Ubuntu operating systems or docker images
     - Samples/publisher/python/ubuntu
     - Samples/subscriber/python/ubuntu
-    - Samples/publisher/python/fedora
-    - Samples/subscriber/python/fedora
 
-    # Go sample apps for Ubuntu, Fedora, and Alpine operating systems or docker images
+    # Go sample apps for Ubuntu and Alpine operating systems or docker images
     - Samples/publisher/go/ubuntu
-    - Samples/publisher/go/fedora
     - Samples/publisher/go/alpine
     - Samples/subscriber/go/ubuntu
-    - Samples/subscriber/go/fedora
     - Samples/subscriber/go/alpine
 ```
 

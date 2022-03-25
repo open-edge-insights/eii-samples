@@ -4,15 +4,15 @@ Subscriber apps consists of the following:
 
 ## C++ subscriber
 
-The C++ subscriber and client are supported in Ubuntu, Alpine, and Fedora operating systems or docker images. The C++ subscriber runs in the independent containers `ia_ubuntu_cpp_sample_sub`, `ia_alpine_cpp_sample_sub`, and `ia_fedora_cpp_sample_sub` respectively.
+The C++ subscriber and client are supported in Ubuntu and Alpine operating systems or docker images. The C++ subscriber runs in the independent containers `ia_ubuntu_cpp_sample_sub` and `ia_alpine_cpp_sample_sub` respectively.
 
 ## Go subscriber
 
-The Go subscriber and client are supported in Ubuntu, Alpine, and Fedora operating systems or docker images.  The Go subscriber runs in the independent containers `ia_ubuntu_go_sample_sub`, `ia_alpine_go_sample_sub`, and `ia_fedora_go_sample_sub` respectively.
+The Go subscriber and client are supported in Ubuntu and Alpine operating systems or docker images.  The Go subscriber runs in the independent containers `ia_ubuntu_go_sample_sub` and `ia_alpine_go_sample_sub` respectively.
 
 ## Python subscriber
 
-The Python subscriber and client are supported are supported only in Ubuntu and Fedora operating systems or docker images. The Python subscriber runs in the independent container `ia_ubuntu_python_sample_sub` and `ia_fedora_python_sample_sub` respectively.
+The Python subscriber and client are supported are supported only in Ubuntu operating systems or docker images. The Python subscriber runs in the independent container `ia_ubuntu_python_sample_sub`.
 
 > **Note:** The subscriber containers comprises of both the subscriber and the client functionality.
 
