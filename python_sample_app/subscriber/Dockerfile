@@ -41,15 +41,14 @@ RUN mv ./*.py $ARTIFACTS
 
 FROM ubuntu:$UBUNTU_IMAGE_VERSION as runtime
 
+WORKDIR /app
+
 # Setting python dev env
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends software-properties-common && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends python3-distutils && \
+    apt-get install -y --no-install-recommends python3-distutils python3-minimal && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+ENV DEBIAN_FRONTEND=noninteractive
 
 ARG EII_UID
 ARG EII_USER_NAME
